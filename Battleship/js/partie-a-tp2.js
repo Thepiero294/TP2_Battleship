@@ -4,32 +4,22 @@
 
       var coordonneesUtilisees = [];
 
-      var coordonneesPorteAvion = this.creationBateau(4);
+      var coordonneesPorteAvion = this.creationBateau(4, coordonneesUtilisees);
 
-      coordonneesUtilisees.push.apply(coordonneesUtilisees, coordonneesPorteAvion);
       var coordonneesCuirasse = this.creationBateau(3, coordonneesUtilisees);
 
-      coordonneesUtilisees.push.apply(coordonneesUtilisees, coordonneesCuirasse);
       var coordonneesDestroyer = this.creationBateau(2, coordonneesUtilisees);
 
-      coordonneesUtilisees.push.apply(coordonneesUtilisees, coordonneesDestroyer);
       var coordonneesTorpilleur = this.creationBateau(2, coordonneesUtilisees);
 
-      coordonneesUtilisees.push.apply(coordonneesUtilisees, coordonneesTorpilleur);
       var coordonneesSousMarin = this.creationBateau(1, coordonneesUtilisees);
-
-      console.log("Porte-Avion : " + coordonneesPorteAvion);
-      console.log("Cuirassé : " + coordonneesCuirasse);
-      console.log("Destroyer : " + coordonneesDestroyer);
-      console.log("Torpilleur : " + coordonneesTorpilleur);
-      console.log("Sous-Marin : " + coordonneesSousMarin);
-      
+     
       return {
-        'porte-avions': ['D-2', 'E-2', 'F-2', 'G-2', 'H-2'],
-        'cuirasse': ['F-9', 'G-9', 'H-9', 'I-9'],
-        'destroyer': ['A-2', 'A-3', 'A-4'],
-        'torpilleur': ['B-7', 'C-7', 'D-7'],
-        'sous-marin': ['F-3', 'F-4'],
+        'porte-avions': coordonneesPorteAvion,
+        'cuirasse': coordonneesCuirasse,
+        'destroyer': coordonneesDestroyer,
+        'torpilleur': coordonneesTorpilleur,
+        'sous-marin': coordonneesSousMarin,
       };
     };
 
@@ -68,6 +58,14 @@
           coordonneesBateau.push(randomPourLettre + "-" + randomPourChiffre); 
         }
       }
+
+      for(i = 0; i < coordonneesBateau.length; i++) {
+        if(coordonneesUtilisees.includes(coordonneesBateau[i])) {
+          var nouveauBateau = this.creationBateau(nbCoordonnees, coordonneesUtilisees);
+          return nouveauBateau;
+        }
+      }
+      coordonneesUtilisees.push.apply(coordonneesUtilisees, coordonneesBateau);
       return coordonneesBateau;
     };
 
@@ -88,7 +86,7 @@
     window.Battleship.ajouterJoueur('Vos noms', monIA);
   }
 
-  monIA.placerBateaux();
+  console.log(monIA.placerBateaux());
 
   // ...
 }());
