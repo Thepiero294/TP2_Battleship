@@ -1,19 +1,18 @@
 (function() {
   class IA {
     placerBateaux() {
+      const coordonneesUtilisees = [];
 
-      var coordonneesUtilisees = [];
+      const coordonneesPorteAvion = this.creationBateau(4, coordonneesUtilisees);
 
-      var coordonneesPorteAvion = this.creationBateau(4, coordonneesUtilisees);
+      const coordonneesCuirasse = this.creationBateau(3, coordonneesUtilisees);
 
-      var coordonneesCuirasse = this.creationBateau(3, coordonneesUtilisees);
+      const coordonneesDestroyer = this.creationBateau(2, coordonneesUtilisees);
 
-      var coordonneesDestroyer = this.creationBateau(2, coordonneesUtilisees);
+      const coordonneesTorpilleur = this.creationBateau(2, coordonneesUtilisees);
 
-      var coordonneesTorpilleur = this.creationBateau(2, coordonneesUtilisees);
+      const coordonneesSousMarin = this.creationBateau(1, coordonneesUtilisees);
 
-      var coordonneesSousMarin = this.creationBateau(1, coordonneesUtilisees);
-     
       return {
         'porte-avions': coordonneesPorteAvion,
         'cuirasse': coordonneesCuirasse,
@@ -24,48 +23,48 @@
     };
 
     creationBateau(nbCoordonnees, coordonneesUtilisees) {
-      var coordonneesBateau = [];
+      let coordonneesBateau = [];
 
-      var randomPourChiffre = Math.floor(Math.random() * 10) + 1;
-      var randomPourLettre = String.fromCharCode(65+Math.floor(Math.random() * 10));
-      var randomPourDirection = Math.floor(Math.random() * 10);
+      const randomPourChiffre = Math.floor(Math.random() * 10) + 1;
+      const randomPourLettre = String.fromCharCode(65+Math.floor(Math.random() * 10));
+      const randomPourDirection = Math.floor(Math.random() * 10);
 
-      coordonneesBateau.push(randomPourLettre + "-" + randomPourChiffre);
+      coordonneesBateau.push(randomPourLettre + '-' + randomPourChiffre);
 
-      if(randomPourDirection == 0) {
-        for(var i = 1; i <= nbCoordonnees; ++i) {
+      if (randomPourDirection == 0) {
+        for (let i = 1; i <= nbCoordonnees; ++i) {
           coordonneesBateau.push(randomPourLettre + '-' + (randomPourChiffre + i));
-        } 
+        }
         // SI UN CHIFFRE DÉPASSE 10
-        if(randomPourChiffre + 4 > 10) {
+        if (randomPourChiffre + 4 > 10) {
           coordonneesBateau = [];
-          for(var i = nbCoordonnees; i > 0; i--) {
+          for (let i = nbCoordonnees; i > 0; i--) {
             coordonneesBateau.push(randomPourLettre + '-' + (randomPourChiffre - i));
           }
-          coordonneesBateau.push(randomPourLettre + "-" + randomPourChiffre);
+          coordonneesBateau.push(randomPourLettre + '-' + randomPourChiffre);
         }
-      }
-      else {
-        for(var i = 1; i <= nbCoordonnees; ++i) {
+      } else {
+        for (let i = 1; i <= nbCoordonnees; ++i) {
           coordonneesBateau.push(String.fromCharCode(randomPourLettre.charCodeAt(0) + i) + '-' + randomPourChiffre);
         }
         // SI UNE LETTRE DÉPASSE LA LETTRE J
-        if(randomPourLettre.charCodeAt(0) + 4 > 74) {
+        if (randomPourLettre.charCodeAt(0) + 4 > 74) {
           coordonneesBateau = [];
-          for(var i = nbCoordonnees; i > 0; i--) {
+          for (let i = nbCoordonnees; i > 0; i--) {
             coordonneesBateau.push(String.fromCharCode(randomPourLettre.charCodeAt(0) - i) + '-' + randomPourChiffre);
           }
-          coordonneesBateau.push(randomPourLettre + "-" + randomPourChiffre); 
+          coordonneesBateau.push(randomPourLettre + '-' + randomPourChiffre);
         }
       }
 
-      for(i = 0; i < coordonneesBateau.length; i++) {
-        if(coordonneesUtilisees.includes(coordonneesBateau[i])) {
-          var nouveauBateau = this.creationBateau(nbCoordonnees, coordonneesUtilisees);
+      for (let i = 0; i < coordonneesBateau.length; i++) {
+        if (coordonneesUtilisees.includes(coordonneesBateau[i])) {
+          const nouveauBateau = this.creationBateau(nbCoordonnees, coordonneesUtilisees);
           return nouveauBateau;
         }
       }
-      coordonneesUtilisees.push.apply(coordonneesUtilisees, coordonneesBateau);
+      // coordonneesUtilisees.push.apply(coordonneesUtilisees, coordonneesBateau);
+      coordonneesUtilisees.push(...coordonneesUtilisees, coordonneesBateau);
       return coordonneesBateau;
     };
 
