@@ -107,6 +107,4 @@
     creationGrilleAtt();
     caseEnterCouleur();
   });
-
-  
 }());

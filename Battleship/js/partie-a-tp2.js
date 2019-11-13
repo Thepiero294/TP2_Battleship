@@ -1,10 +1,8 @@
 (function() {
-  var cptNombresBateauxCoules = 0;
-  var resultatTirPrecedent;
+  let cptNombresBateauxCoules = 0;
+  let resultatTirPrecedent;
 
   class IA {
-
-    
     placerBateaux() {
       const coordonneesUtilisees = [];
 
@@ -74,16 +72,15 @@
     };
 
     lancerMissile() {
-      var coordonneesMissile;
+      let coordonneesMissile;
       if (resultatTirPrecedent === undefined || resultatTirPrecedent == 0) {
         const randomPourChiffre = Math.floor(Math.random() * 10) + 1;
         const randomPourLettre = String.fromCharCode(65+Math.floor(Math.random() * 10));
         coordonneesMissile = randomPourLettre + '-' + randomPourChiffre;
-      
       }
       if (resultatTirPrecedent == 1) {
 
-      } 
+      }
       valeurDernierMissile = coordonneesMissile;
       return coordonneesMissile;
     };
