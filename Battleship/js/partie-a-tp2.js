@@ -1,5 +1,10 @@
 (function() {
+  var cptNombresBateauxCoules = 0;
+  var resultatTirPrecedent;
+
   class IA {
+
+    
     placerBateaux() {
       const coordonneesUtilisees = [];
 
@@ -69,11 +74,22 @@
     };
 
     lancerMissile() {
-      // Trouver un meilleur algo .. !
-      return 'A-1';
+      var coordonneesMissile;
+      if (resultatTirPrecedent === undefined || resultatTirPrecedent == 0) {
+        const randomPourChiffre = Math.floor(Math.random() * 10) + 1;
+        const randomPourLettre = String.fromCharCode(65+Math.floor(Math.random() * 10));
+        coordonneesMissile = randomPourLettre + '-' + randomPourChiffre;
+      
+      }
+      if (resultatTirPrecedent == 1) {
+
+      } 
+      valeurDernierMissile = coordonneesMissile;
+      return coordonneesMissile;
     };
 
     resultatLancerMissile(resultat) {
+
       // Ajuster l'algo pour utiliser le résultat d'un lancé
     };
 
@@ -86,6 +102,7 @@
   }
 
   console.log(monIA.placerBateaux());
+  console.log(monIA.lancerMissile());
 
   // ...
 }());
