@@ -1,4 +1,21 @@
 (function() {
+  import * as AIClasse from './partieA';
+  let joueurHumain = null;
+  let joueurAI = null;
+  let joueurCommence = 0;
+  let partieCommencer = false;
+  let estEnCoursDePlacement = false;
+
+  /**
+   * Retourne une nombre entre le chiffre minimum (inclus) et maximum (inclus)
+   * @param {number} nbMin Nombre minimum de l'intervalle
+   * @param {number} NbMax Nombre maximum de l'intervalle
+   * @return {number} Retourne un nombre entier entre l'intervalle
+   */
+  function nombreAleatoireIntervalle(nbMin, NbMax) {
+    return Math.floor(Math.random() * (nbMax - nbMin + 1)) + min;
+  }
+
   class Joueur {
     constructor() {
       this.listeBateaux = {
@@ -18,8 +35,31 @@
       return this.listeBateaux;
     }
   }
+
+  class Partie {
+    constructor() {
+      this.positionBateauxJoueur1 = null;
+      this.positionBateauxJoueur2 = null;
+    }
+
+    /**
+     * Fonction qui sert à tout mettre en place pour commencer la partie
+     */
+    commencerPartie() {
+      partieCommencer = true;
+      this.positionBateauxJoueur1 = joueurHumain.placerBateaux();
+      // TODO Faire la liaison entre les 2 fichier js
+      this.positionBateauxJoueur2 = joueurAI.AIClasse.placerBateaux();
+      joueurCommence = nombreAleatoireIntervalle(1, 2);
+    }
+
+
+  }
   $(document).ready(function() {
     joueurHumain = new Joueur();
+    partie = new Partie();
+
+
     function creationGrilleDef() {
       const grille = document.getElementById('grilleDef');
       const grilleDef = document.createElement('table');
