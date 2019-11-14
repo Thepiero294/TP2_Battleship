@@ -1,5 +1,6 @@
 (function() {
-  let cptNombresBateauxCoules = 0;
+  // Tu peux le remettre normal c juste que si il était pas en commentaire il y avait un erreur eslint
+  // let cptNombresBateauxCoules = 0;
   let resultatTirPrecedent;
 
   class IA {
