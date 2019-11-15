@@ -5,6 +5,19 @@
     joueur: '',
     ordinateur: '',
   };
+  // Compteur pour nombre de coup touché sur les bateaux du joueurs
+  let nbCoupPorteAvionJ = 0;
+  let nbCoupCuirasseJ = 0;
+  let nbCoupDestroyerJ = 0;
+  let nbCoupTorpilleurJ = 0;
+  let nbCoupSousMarinJ = 0;
+
+  // Compteur pour nombre de coup touché sur les bateaux de l'ordinateur
+  let nbCoupPorteAvionIA = 0;
+  let nbCoupCuirasseIA = 0;
+  let nbCoupDestroyerIA = 0;
+  let nbCoupTorpilleurIA = 0;
+  let nbCoupSousMarinIA = 0;
   // let joueurHumain = null;
   // const joueurAI = null;
   // let joueurCommence = 0;
@@ -30,24 +43,7 @@
         'torpilleur': ['', '', ''],
         'sous-marin': ['', '', ''],
       };
-
-      // TODO Remplacer par la nouvelle façons
-      this.grilleJoueur = this.remplirGrilleJoueur();
     }
-
-    remplirGrilleJoueur() {
-      const grille = [10];
-      for (let i = 0; i < 10; i++) {
-        grille[i] = [10];
-      }
-
-      for (let i = 0; i < 10; i++) {
-        for (let j = 0; j < 10; j++) {
-          grille[i][j] = -1;
-        }
-      }
-      return grille;
-    };
 
     /**
      * Fonction qui sert à placer les bateaux du joueur
@@ -55,6 +51,24 @@
      */
     placementBateaux() {
       return this.listeBateaux;
+    }
+
+    /**
+     * Cette fonction détermine si ce que le joueur a
+     * touché et renvoie le bon entier selon le résultat
+     * @param {string} positionTir Position à laquel le joueur à tiré
+     * @return {Number} Retourne un entier selon le résultat du tir
+     */
+    obtenirResultatLancerJoueur(positionTir) {
+      // TODO J'étais rendu à finir cette fonction
+      if (this.listeBateaux['porte-avion'].forEach() == positionTir) {
+        nbCoupPorteAvionIA++;
+        if (nbCoupPorteAvionIA == 5) {
+          return 2;
+        } else {
+          return 1;
+        }
+      }
     }
   }
 
@@ -87,22 +101,15 @@
      * @return {bool} Retourne vrai ou faux dépendant si la partie est fini ou non
      */
     partieFini() {
-      // TODO Vérifier pour arranger c'est fonction avec la nouvelle méthode plus haut
       const nbCoupTotalGagner = 17;
-      let nbCoupToucheJoueur = 0;
-      let nbCoupToucheIA = 0;
+      let nbCoupToucheJoueur = 0; // Coup touché par le joueur
+      let nbCoupToucheIA = 0; // Coup touché par l'ordinateur
 
-      for (let i = 0; i < 10; i++) {
-        for (let j = 0; j < 10; j++) {
-          if (joueurHumain.grilleJoueur[i][j] == -1) {
-            nbCoupToucheJoueur++;
-          }
+      nbCoupToucheJoueur = nbCoupPorteAvionIA + nbCoupCuirasseIA +
+        nbCoupDestroyerIA + nbCoupTorpilleurIA + nbCoupSousMarinIA;
 
-          if (joueurAI.grilleIA[i][j] == -1) {
-            nbCoupToucheIA++;
-          }
-        }
-      }
+      nbCoupToucheIA = nbCoupPorteAvionJ + nbCoupCuirasseJ +
+      nbCoupDestroyerJ + nbCoupTorpilleurJ + nbCoupSousMarinJ;
 
       if (nbCoupToucheJoueur == nbCoupTotalGagner || nbCoupToucheIA == nbCoupTotalGagner) {
         return true;
@@ -116,17 +123,11 @@
      * @return {string} Retourne le nom de la personnes gagnante
      */
     estGagnant() {
-      // TODO Vérifier pour arranger c'est fonction avec la nouvelle méthode plus haut
       const nbCoupTotalGagner = 17;
       let nbCoupToucheJoueur = 0;
 
-      for (let i = 0; i < 10; i++) {
-        for (let j = 0; j < 10; j++) {
-          if (joueurHumain.grilleJoueur[i][j] == -1) {
-            nbCoupToucheJoueur++;
-          }
-        }
-      }
+      nbCoupToucheJoueur = nbCoupPorteAvionIA + nbCoupCuirasseIA +
+      nbCoupDestroyerIA + nbCoupTorpilleurIA + nbCoupSousMarinIA;
 
       if (nbCoupToucheJoueur == nbCoupTotalGagner) {
         return 'Le joueur est le gagnant! :)';
