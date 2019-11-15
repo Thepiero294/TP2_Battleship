@@ -1,7 +1,12 @@
 (function() {
-  let joueurHumain = null;
-  // TODO liaison des 2 fichiers
-  const joueurAI = null;
+  // Joueurs de la partie
+  const joueursPartie =
+  {
+    joueur: '',
+    ordinateur: '',
+  };
+  // let joueurHumain = null;
+  // const joueurAI = null;
   // let joueurCommence = 0;
   // let partieCommencer = false;
   // let estEnCoursDePlacement = false;
@@ -26,6 +31,7 @@
         'sous-marin': ['', '', ''],
       };
 
+      // TODO Remplacer par la nouvelle façons
       this.grilleJoueur = this.remplirGrilleJoueur();
     }
 
@@ -58,14 +64,21 @@
       this.positionBateauxJoueur2 = null;
     }
 
+    ajouterJoueur(joueur) {
+      joueursPartie.joueur = joueur;
+    }
+
+    ajouterOrdinateur(ordinateur) {
+      joueursPartie.ordinateur = ordinateur;
+    }
+
     /**
      * Fonction qui sert à tout mettre en place pour commencer la partie
      */
     commencerPartie() {
       partieCommencer = true;
-      this.positionBateauxJoueur1 = joueurHumain.placementBateaux();
-      // TODO Faire la liaison entre les 2 fichier js
-      this.positionBateauxJoueur2 = joueurAI.placerBateaux();
+      this.positionBateauxJoueur1 = joueursPartie.joueur.placementBateaux();
+      this.positionBateauxJoueur2 = joueursPartie.ordinateur.placerBateaux();
       joueurCommence = nombreAleatoireIntervalle(1, 2);
     }
 
@@ -74,6 +87,7 @@
      * @return {bool} Retourne vrai ou faux dépendant si la partie est fini ou non
      */
     partieFini() {
+      // TODO Vérifier pour arranger c'est fonction avec la nouvelle méthode plus haut
       const nbCoupTotalGagner = 17;
       let nbCoupToucheJoueur = 0;
       let nbCoupToucheIA = 0;
@@ -102,6 +116,7 @@
      * @return {string} Retourne le nom de la personnes gagnante
      */
     estGagnant() {
+      // TODO Vérifier pour arranger c'est fonction avec la nouvelle méthode plus haut
       const nbCoupTotalGagner = 17;
       let nbCoupToucheJoueur = 0;
 
@@ -121,10 +136,12 @@
     }
   }
 
-
   $(document).ready(function() {
     joueurHumain = new Joueur();
-    window.Battleship = new Battleship();
+    partie = new Battleship();
+
+    partie.ajouterJoueur(joueurHumain);
+    partie.ajouterOrdinateur(window.IA);
 
     function creationGrilleDef() {
       const grille = document.getElementById('grilleDef');
@@ -215,4 +232,4 @@
     caseEnterCouleur();
     console.log(joueurHumain.grilleJoueur[9][9]);
   });
-}(window.Battleship));
+}());

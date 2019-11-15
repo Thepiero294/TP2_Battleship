@@ -82,7 +82,7 @@
       if (resultatTirPrecedent == 1) {
 
       }
-      valeurDernierMissile = coordonneesMissile;
+      // valeurDernierMissile = coordonneesMissile;
       return coordonneesMissile;
     };
 
@@ -95,6 +95,8 @@
   }
 
   const monIA = new IA();
+  window.IA = monIA;
+
   if (window.Battleship && window.Battleship.ajouterJoueur) {
     window.Battleship.ajouterJoueur('Vos noms', monIA);
   }
