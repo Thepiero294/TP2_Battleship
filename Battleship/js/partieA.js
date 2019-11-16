@@ -4,6 +4,13 @@
   let resultatTirPrecedent;
 
   class IA {
+    constructor() {
+      this.listeBateaux = this.placerBateaux();
+    }
+    /**
+     * Fonction qui sert à placer les bateaux de l'ordinateur
+     * @return {object} Object littéral de bateaux avec leurs coordonnées
+     */
     placerBateaux() {
       const coordonneesUtilisees = [];
 
@@ -86,10 +93,30 @@
       return coordonneesMissile;
     };
 
+    /**
+     * Fonction qui reçois un résultat et modifie l'interface de jeu
+     * @param {Number} resultat Résultat du lancé
+     */
     resultatLancerMissile(resultat) {
-
-      // Ajuster l'algo pour utiliser le résultat d'un lancé
-    };
+      // TODO Il va rester à aller modifier dans l'interface selon le résultat obtenue
+      // La variable test c juste pour me rapeller d'aller modifier ça quand on va être rendu à l'interface
+      const test = 0;
+      if (resultat == 0) {
+        test;
+      } else if (resultat == 1) {
+        test;
+      } else if (resultat == 2) {
+        $('#porte-avions-ia').removeClass('btn-info').addClass('btn-danger');
+      } else if (resultat == 3) {
+        $('#cuirasse-ia').removeClass('btn-info').addClass('btn-danger');
+      } else if (resultat == 4) {
+        $('#destroyer-ia').removeClass('btn-info').addClass('btn-danger');
+      } else if (resultat == 5) {
+        $('#torpilleur-ia').removeClass('btn-info').addClass('btn-danger');
+      } else if (resultat == 6) {
+        $('#sous-marin-ia').removeClass('btn-info').addClass('btn-danger');
+      }
+    }
 
     // ...
   }
