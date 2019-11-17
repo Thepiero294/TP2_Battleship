@@ -270,13 +270,13 @@
     // console.log(partie.ordinateur);
 
     // Section test ne pas supprimer *******************************************
-    joueursPartie.ordinateur.placerBateaux();
-    const allo = joueursPartie.joueur.listeBateaux['porte-avions'];
-    const po = joueursPartie.ordinateur.listeBateaux['porte-avions'];
-    joueursPartie.joueur.resultatLancerMissile(2);
-    joueursPartie.ordinateur.resultatLancerMissile(2);
-    po;
-    allo;
+    // joueursPartie.ordinateur.placerBateaux();
+    // const allo = joueursPartie.joueur.listeBateaux['porte-avions'];
+    // const po = joueursPartie.ordinateur.listeBateaux['porte-avions'];
+    // joueursPartie.joueur.resultatLancerMissile(2);
+    // joueursPartie.ordinateur.resultatLancerMissile(2);
+    // po;
+    // allo;
     // *************************************************************************
 
     function creationGrilleDef() {

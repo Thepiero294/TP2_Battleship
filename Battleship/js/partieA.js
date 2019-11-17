@@ -48,7 +48,6 @@
     };
 
 
-
     creationBateau(nbCoordonnees, coordonneesUtilisees) {
       let coordonneesBateau = [];
 
