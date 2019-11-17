@@ -1,12 +1,11 @@
 (function() {
   // Joueurs de la partie
-  var joueur = '';
-  var ordinateur = '';
-  // const joueursPartie =
-  // {
-  //   joueur: '',
-  //   ordinateur: '',
-  // };
+  const joueursPartie =
+  {
+    joueur: '',
+    ordinateur: '',
+  };
+
   // Compteur pour nombre de coup touché sur les bateaux du joueurs
   let nbCoupPorteAvionJ = 0;
   let nbCoupCuirasseJ = 0;
@@ -20,9 +19,11 @@
   let nbCoupDestroyerIA = 0;
   let nbCoupTorpilleurIA = 0;
   let nbCoupSousMarinIA = 0;
-  // let joueurHumain = null;
-  // const joueurAI = null;
-  // let joueurCommence = 0;
+
+  // Liste des tire effectuer par le joueur
+  const coordonneesCoupTirer = [];
+
+  let joueurCommence = 0;
   // let partieCommencer = false;
   // let estEnCoursDePlacement = false;
 
@@ -56,6 +57,21 @@
     }
 
     /**
+     * Fonction qui vérifie si la coordonnée du tir est valide ou n'a pas déjà été effectué
+     * @param {string} coordonneeTir Contient la coordonnée du tir effectué
+     * @return {string} Retourne la coordonnée si elle est valide
+     */
+    lancerMissile(coordonneeTir) {
+      let estValide = false;
+      while (estValide == false) {
+        if (!coordonneesCoupTirer.includes(coordonneeTir)) {
+          estValide = true;
+        }
+      }
+      return coordonneeTir;
+    }
+
+    /**
      * Fonction qui reçois un résultat et modifie l'interface de jeu
      * @param {Number} resultat Résultat du lancé
      */
@@ -83,59 +99,65 @@
 
   class Battleship {
     constructor() {
-      this.positionBateauxJoueur = joueur.listeBateaux;
-      this.positionBateauxOrdinateur = ordinateur.listeBateaux;
+      this.positionBateauxJoueur = joueursPartie.joueur.listeBateaux;
+      this.positionBateauxOrdinateur = joueursPartie.ordinateur.listeBateaux;
     }
 
     ajouterJoueur(joueur, ordinateur) {
-      this.joueur = joueur;
-      this.ordinateur = ordinateur;
+      joueursPartie.joueur = joueur;
+      joueursPartie.ordinateur = ordinateur;
     }
 
 
     /**
      * Cette fonction détermine ce que le joueur a
      * touché et renvoie le bon entier selon le résultat
-     * @param {string} positionTir Position à laquel le joueur à tiré
+     * @param {string} coordonneeTir Position à laquel le joueur à tiré
      * @return {Number} Retourne un entier selon le résultat du tir
      */
-    obtenirResultatLancerJoueur(positionTir) {
-      if (joueursPartie.ordinateur.listeBateaux['porte-avions'].includes(positionTir)) {
+    obtenirResultatLancerJoueur(coordonneeTir) {
+      if (joueursPartie.ordinateur.listeBateaux['porte-avions'].includes(coordonneeTir)) {
         nbCoupPorteAvionIA++;
+        coordonneesCoupTirer.push(coordonneeTir);
         if (nbCoupPorteAvionIA == 5) {
           return 2;
         } else {
           return 1;
         }
-      } else if (joueursPartie.ordinateur.listeBateaux['cuirasse'].includes(positionTir)) {
+      } else if (joueursPartie.ordinateur.listeBateaux['cuirasse'].includes(coordonneeTir)) {
         nbCoupCuirasseIA++;
+        coordonneesCoupTirer.push(coordonneeTir);
         if (nbCoupCuirasseIA == 4) {
           return 3;
         } else {
           return 1;
         }
-      } else if (joueursPartie.ordinateur.listeBateaux['destroyer'].includes(positionTir)) {
+      } else if (joueursPartie.ordinateur.listeBateaux['destroyer'].includes(coordonneeTir)) {
         nbCoupDestroyerIA++;
+        coordonneesCoupTirer.push(coordonneeTir);
         if (nbCoupDestroyerIA == 3) {
           return 4;
         } else {
           return 1;
         }
-      } else if (joueursPartie.ordinateur.listeBateaux['torpilleur'].includes(positionTir)) {
+      } else if (joueursPartie.ordinateur.listeBateaux['torpilleur'].includes(coordonneeTir)) {
         nbCoupTorpilleurIA++;
+        coordonneesCoupTirer.push(coordonneeTir);
         if (nbCoupTorpilleurIA == 3) {
           return 5;
         } else {
           return 1;
         }
-      } else if (joueursPartie.ordinateur.listeBateaux['sous-marin'].includes(positionTir)) {
+      } else if (joueursPartie.ordinateur.listeBateaux['sous-marin'].includes(coordonneeTir)) {
         nbCoupSousMarinIA++;
+        coordonneesCoupTirer.push(coordonneeTir);
         if (nbCoupSousMarinIA == 2) {
           return 6;
         } else {
           return 1;
         }
       } else {
+        coordonneesCoupTirer.push(coordonneeTir);
         return 0;
       }
     }
@@ -143,39 +165,39 @@
     /**
      * Cette fonction détermine ce que l'ordinateur a
      * touché et renvoie le bon entier selon le résultat
-     * @param {string} positionTir Position à laquel le joueur à tiré
+     * @param {string} coordonneeTir Position à laquel le joueur à tiré
      * @return {Number} Retourne un entier selon le résultat du tir
      */
-    obtenirResultatLancerOrdinateur(positionTir) {
-      if (joueursPartie.joueur.listeBateaux['porte-avions'].includes(positionTir)) {
+    obtenirResultatLancerOrdinateur(coordonneeTir) {
+      if (joueursPartie.joueur.listeBateaux['porte-avions'].includes(coordonneeTir)) {
         nbCoupPorteAvionJ++;
         if (nbCoupPorteAvionJ == 5) {
           return 2;
         } else {
           return 1;
         }
-      } else if (joueursPartie.joueur.listeBateaux['cuirasse'].includes(positionTir)) {
+      } else if (joueursPartie.joueur.listeBateaux['cuirasse'].includes(coordonneeTir)) {
         nbCoupCuirasseJ++;
         if (nbCoupCuirasseJ == 4) {
           return 3;
         } else {
           return 1;
         }
-      } else if (joueursPartie.joueur.listeBateaux['destroyer'].includes(positionTir)) {
+      } else if (joueursPartie.joueur.listeBateaux['destroyer'].includes(coordonneeTir)) {
         nbCoupDestroyerJ++;
         if (nbCoupDestroyerJ == 3) {
           return 4;
         } else {
           return 1;
         }
-      } else if (joueursPartie.joueur.listeBateaux['torpilleur'].includes(positionTir)) {
+      } else if (joueursPartie.joueur.listeBateaux['torpilleur'].includes(coordonneeTir)) {
         nbCoupTorpilleurJ++;
         if (nbCoupTorpilleurJ == 3) {
           return 5;
         } else {
           return 1;
         }
-      } else if (joueursPartie.joueur.listeBateaux['sous-marin'].includes(positionTir)) {
+      } else if (joueursPartie.joueur.listeBateaux['sous-marin'].includes(coordonneeTir)) {
         nbCoupSousMarinJ++;
         if (nbCoupSousMarinJ == 2) {
           return 6;
@@ -242,19 +264,19 @@
     joueurHumain = new Joueur();
     partie = new Battleship();
 
-    partie.ajouterJoueur(window.IA, window.IA);
+    partie.ajouterJoueur(joueurHumain, window.IA);
 
-    //console.log(partie.joueur);
-    //console.log(partie.ordinateur);
+    // console.log(partie.joueur);
+    // console.log(partie.ordinateur);
 
-    // Section test à supprimer ************************************************
-    // joueursPartie.ordinateur.placerBateaux();
-    // const allo = joueursPartie.joueur.listeBateaux['porte-avions'];
-    // const po = joueursPartie.ordinateur.listeBateaux['porte-avions'];
-    // joueursPartie.joueur.resultatLancerMissile(2);
-    // joueursPartie.ordinateur.resultatLancerMissile(2);
-    // po;
-    // allo;
+    // Section test ne pas supprimer *******************************************
+    joueursPartie.ordinateur.placerBateaux();
+    const allo = joueursPartie.joueur.listeBateaux['porte-avions'];
+    const po = joueursPartie.ordinateur.listeBateaux['porte-avions'];
+    joueursPartie.joueur.resultatLancerMissile(2);
+    joueursPartie.ordinateur.resultatLancerMissile(2);
+    po;
+    allo;
     // *************************************************************************
 
     function creationGrilleDef() {
