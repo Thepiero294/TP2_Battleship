@@ -123,12 +123,12 @@
 
   const monIA = new IA();
   window.IA = monIA;
-
-  if (window.Battleship && window.Battleship.ajouterJoueur) {
-    window.Battleship.ajouterJoueur('Vos noms', monIA);
-  }
-
   console.log(monIA.placerBateaux());
+
+  const monIA2 = new IA();
+  console.log(monIA2.placerBateaux());
+
+
   console.log(monIA.lancerMissile());
 
   // ...

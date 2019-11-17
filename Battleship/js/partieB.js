@@ -1,10 +1,12 @@
 (function() {
   // Joueurs de la partie
-  const joueursPartie =
-  {
-    joueur: '',
-    ordinateur: '',
-  };
+  var joueur = '';
+  var ordinateur = '';
+  // const joueursPartie =
+  // {
+  //   joueur: '',
+  //   ordinateur: '',
+  // };
   // Compteur pour nombre de coup touché sur les bateaux du joueurs
   let nbCoupPorteAvionJ = 0;
   let nbCoupCuirasseJ = 0;
@@ -25,7 +27,7 @@
   // let estEnCoursDePlacement = false;
 
   /**
-   * Retourne une nombre entre le chiffre minimum (inclus) et maximum (inclus)
+   * Retourne un nombre entre le chiffre minimum (inclus) et maximum (inclus)
    * @param {number} nbMin Nombre minimum de l'intervalle
    * @param {number} nbMax Nombre maximum de l'intervalle
    * @return {number} Retourne un nombre entier entre l'intervalle
@@ -81,17 +83,15 @@
 
   class Battleship {
     constructor() {
-      this.positionBateauxJoueur = joueursPartie.joueur.listeBateaux;
-      this.positionBateauxOrdinateur = joueursPartie.ordinateur.listeBateaux;
+      this.positionBateauxJoueur = joueur.listeBateaux;
+      this.positionBateauxOrdinateur = ordinateur.listeBateaux;
     }
 
-    ajouterJoueur(joueur) {
-      joueursPartie.joueur = joueur;
+    ajouterJoueur(joueur, ordinateur) {
+      this.joueur = joueur;
+      this.ordinateur = ordinateur;
     }
 
-    ajouterOrdinateur(ordinateur) {
-      joueursPartie.ordinateur = ordinateur;
-    }
 
     /**
      * Cette fonction détermine ce que le joueur a
@@ -242,17 +242,19 @@
     joueurHumain = new Joueur();
     partie = new Battleship();
 
-    partie.ajouterJoueur(joueurHumain);
-    partie.ajouterOrdinateur(window.IA);
+    partie.ajouterJoueur(window.IA, window.IA);
+
+    //console.log(partie.joueur);
+    //console.log(partie.ordinateur);
 
     // Section test à supprimer ************************************************
-    joueursPartie.ordinateur.placerBateaux();
-    const allo = joueursPartie.joueur.listeBateaux['porte-avions'];
-    const po = joueursPartie.ordinateur.listeBateaux['porte-avions'];
-    joueursPartie.joueur.resultatLancerMissile(2);
-    joueursPartie.ordinateur.resultatLancerMissile(2);
-    po;
-    allo;
+    // joueursPartie.ordinateur.placerBateaux();
+    // const allo = joueursPartie.joueur.listeBateaux['porte-avions'];
+    // const po = joueursPartie.ordinateur.listeBateaux['porte-avions'];
+    // joueursPartie.joueur.resultatLancerMissile(2);
+    // joueursPartie.ordinateur.resultatLancerMissile(2);
+    // po;
+    // allo;
     // *************************************************************************
 
     function creationGrilleDef() {
