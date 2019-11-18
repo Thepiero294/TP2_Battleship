@@ -53,7 +53,6 @@
       };
     };
 
-
     creationBateau(nbCoordonnees, coordonneesUtilisees) {
       let coordonneesBateau = [];
 
@@ -192,7 +191,6 @@
       return 'allo';
     }
 
-
     calculResultat(coordonneesMissile) {
       console.log(coordonneesMissile);
       console.log(endroitsCiblees);
@@ -202,7 +200,6 @@
       coordonneesTirPrecedent = coordonneesMissile;
       
       endroitsCiblees.push(coordonneesMissile);
-
 
       if (this.listeBateaux.porteAvions.includes(coordonneesMissile)) {
         ciblesTouchees.push(coordonneesMissile);
@@ -285,65 +282,4 @@
       console.log(ciblesTouchees);
     }
   });
-
-
-  // console.log(test);
-
-
-  // console.log(resultatTirPrecedent);
-  // console.log(coordonneesTirPrecedent[0] + '-' + (coordonneesTirPrecedent[2] - 1));
-
-
-  // if(monIA.listeBateaux.includes('porte-avions')) {
-  //   console.log('C\'est vrai');
-  // }
-
-  // ...
 }());
-
-
-// creationBateau(nbCoordonnees, coordonneesUtilisees) {
-//   let coordonneesBateau = [];
-
-//   const randomPourChiffre = Math.floor(Math.random() * 10) + 1;
-//   const randomPourLettre = String.fromCharCode(65+Math.floor(Math.random() * 10));
-//   const randomPourDirection = Math.floor(Math.random() * 10);
-
-//   coordonneesBateau.push(randomPourLettre + '-' + randomPourChiffre);
-
-//   if (randomPourDirection == 0) {
-//     for (let i = 1; i <= nbCoordonnees; ++i) {
-//       coordonneesBateau.push(randomPourLettre + '-' + (randomPourChiffre + i));
-//     }
-//     // SI UN CHIFFRE DÉPASSE 10
-//     if (randomPourChiffre + 4 > 10) {
-//       coordonneesBateau = [];
-//       for (let i = nbCoordonnees; i > 0; i--) {
-//         coordonneesBateau.push(randomPourLettre + '-' + (randomPourChiffre - i));
-//       }
-//       coordonneesBateau.push(randomPourLettre + '-' + randomPourChiffre);
-//     }
-//   } else {
-//     for (let i = 1; i <= nbCoordonnees; ++i) {
-//       coordonneesBateau.push(String.fromCharCode(randomPourLettre.charCodeAt(0) + i) + '-' + randomPourChiffre);
-//     }
-//     // SI UNE LETTRE DÉPASSE LA LETTRE J
-//     if (randomPourLettre.charCodeAt(0) + 4 > 74) {
-//       coordonneesBateau = [];
-//       for (let i = nbCoordonnees; i > 0; i--) {
-//         coordonneesBateau.push(String.fromCharCode(randomPourLettre.charCodeAt(0) - i) + '-' + randomPourChiffre);
-//       }
-//       coordonneesBateau.push(randomPourLettre + '-' + randomPourChiffre);
-//     }
-//   }
-
-//   for (let i = 0; i < coordonneesBateau.length; i++) {
-//     if (coordonneesUtilisees.includes(coordonneesBateau[i])) {
-//       const nouveauBateau = this.creationBateau(nbCoordonnees, coordonneesUtilisees);
-//       return nouveauBateau;
-//     }
-//   }
-//   // coordonneesUtilisees.push.apply(coordonneesUtilisees, coordonneesBateau);
-//   coordonneesUtilisees.push(...coordonneesUtilisees, coordonneesBateau);
-//   return coordonneesBateau;
-// };
