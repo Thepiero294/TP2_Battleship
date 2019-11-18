@@ -45,11 +45,11 @@
       const coordonneesSousMarin = this.creationBateau(1, coordonneesUtilisees);
 
       return {
-        'porteAvions': coordonneesPorteAvion,
+        'porte-avions': coordonneesPorteAvion,
         'cuirasse': coordonneesCuirasse,
         'destroyer': coordonneesDestroyer,
         'torpilleur': coordonneesTorpilleur,
-        'sousMarin': coordonneesSousMarin,
+        'sous-marin': coordonneesSousMarin,
       };
     };
 
