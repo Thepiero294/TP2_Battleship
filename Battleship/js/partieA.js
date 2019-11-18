@@ -110,8 +110,8 @@
     lancerMissile() {
       let coordonneesMissile;
 
-      if (resultatTirPrecedent === undefined || resultatTirPrecedent == 0 && this.verificationDirection() 
-        || (resultatTirPrecedent != 0 && resultatTirPrecedent != 1)) {
+      if (resultatTirPrecedent === undefined || resultatTirPrecedent == 0 && this.verificationDirection() ||
+        (resultatTirPrecedent != 0 && resultatTirPrecedent != 1)) {
         const randomPourChiffre = Math.floor(Math.random() * 10) + 1;
         const randomPourLettre = String.fromCharCode(65+Math.floor(Math.random() * 10));
         coordonneesMissile = randomPourLettre + '-' + randomPourChiffre;
@@ -119,15 +119,15 @@
         chiffrePremierMissile = randomPourChiffre;
       } else if (resultatTirPrecedent == 1 && gauche == false) {
         coordonneesMissile = coordonneesTirPrecedent[0] + '-' + (coordonneesTirPrecedent[2] - 1);
-        if(coordonneesMissile[2] == 0) {
-          coordonneesMissile = coordonneesTirPrecedent[0] + '-' + 9; 
+        if (coordonneesMissile[2] == 0) {
+          coordonneesMissile = coordonneesTirPrecedent[0] + '-' + 9;
         }
         console.log(coordonneesMissile);
         gauche = true;
       } else if (resultatTirPrecedent == 1 && droite == false && haut == false && bas == false) {
         coordonneesMissile = coordonneesTirPrecedent[0] + '-' + (coordonneesTirPrecedent[2] - 1);
-        if(coordonneesMissile[2] == 0) {
-          coordonneesMissile = coordonneesTirPrecedent[0] + '-' + 9; 
+        if (coordonneesMissile[2] == 0) {
+          coordonneesMissile = coordonneesTirPrecedent[0] + '-' + 9;
         }
         console.log(coordonneesMissile);
         gauche = true;
@@ -153,11 +153,12 @@
         console.log(coordonneesMissile);
         bas = true;
       } else if (resultatTirPrecedent == 1 && bas == true) {
-        coordonneesMissile = String.fromCharCode(coordonneesTirPrecedent[0].charCodeAt(0) + 1) + '-' + chiffrePremierMissile;
+        coordonneesMissile = String.fromCharCode(coordonneesTirPrecedent[0].charCodeAt(0) + 1) + '-' +
+          chiffrePremierMissile;
         console.log(coordonneesMissile);
         bas = true;
       }
-      
+
       this.calculResultat(coordonneesMissile);
     };
 
@@ -169,7 +170,7 @@
     resultatLancerMissile(resultat) {
       // TODO Il va rester à aller modifier dans l'interface selon le résultat obtenue
       // La variable test c juste pour me rapeller d'aller modifier ça quand on va être rendu à l'interface
-      //L'IA DOIT PAS ÊTRE INDÉPENDANT DE LA PARTIE B?
+      // L'IA DOIT PAS ÊTRE INDÉPENDANT DE LA PARTIE B?
       const test = 0;
       if (resultat == 0) {
         test;
@@ -198,7 +199,7 @@
         this.lancerMissile();
       }
       coordonneesTirPrecedent = coordonneesMissile;
-      
+
       endroitsCiblees.push(coordonneesMissile);
 
       if (this.listeBateaux.porteAvions.includes(coordonneesMissile)) {
