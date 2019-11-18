@@ -109,6 +109,20 @@ textarea {
   background-color: #99e6ff;
 }
 
+.touche {
+  width: 50px;
+  height: 50px;
+  padding: 10px;
+  background-color: red;
+}
+
+.manquer {
+  width: 50px;
+  height: 50px;
+  padding: 10px;
+  background-color: chocolate;
+}
+
 .titre-lig {
   font-weight: bold;
 }

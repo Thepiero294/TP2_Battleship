@@ -56,9 +56,9 @@
     creationBateau(nbCoordonnees, coordonneesUtilisees) {
       let coordonneesBateau = [];
 
-      let randomPourChiffre = Math.floor(Math.random() * 10) + 1;
-      let randomPourLettre = String.fromCharCode(65+Math.floor(Math.random() * 10));
-      let randomPourDirection = Math.floor(Math.random() * 10);
+      const randomPourChiffre = Math.floor(Math.random() * 10) + 1;
+      const randomPourLettre = String.fromCharCode(65+Math.floor(Math.random() * 10));
+      const randomPourDirection = Math.floor(Math.random() * 10);
 
       coordonneesBateau.push(randomPourLettre + '-' + randomPourChiffre);
 
@@ -90,7 +90,7 @@
 
       for (let i = 0; i < coordonneesBateau.length; i++) {
         if (coordonneesUtilisees.includes(coordonneesBateau[i])) {
-          let nouveauBateau = this.creationBateau(nbCoordonnees, coordonneesUtilisees);
+          const nouveauBateau = this.creationBateau(nbCoordonnees, coordonneesUtilisees);
           return nouveauBateau;
         }
       }
@@ -109,14 +109,21 @@
 
     lancerMissile() {
       let coordonneesMissile;
+<<<<<<< HEAD
       coordonneesMissile = coordonneesTirPrecedent;
       if (resultatTirPrecedent === undefined || resultatTirPrecedent == 0 && this.verificationDirection() 
         || (resultatTirPrecedent != 0 && resultatTirPrecedent != 1)) {
+=======
+
+      if (resultatTirPrecedent === undefined || resultatTirPrecedent == 0 && this.verificationDirection() ||
+        (resultatTirPrecedent != 0 && resultatTirPrecedent != 1)) {
+>>>>>>> master
         const randomPourChiffre = Math.floor(Math.random() * 10) + 1;
         const randomPourLettre = String.fromCharCode(65+Math.floor(Math.random() * 10));
         coordonneesMissile = randomPourLettre + '-' + randomPourChiffre;
         lettrePremierMissile = randomPourLettre;
         chiffrePremierMissile = randomPourChiffre;
+<<<<<<< HEAD
         coordonneesMissile = coordonneesMissile.split('-');
           if (endroitsCiblees.includes(coordonneesMissile[0] + '-' + coordonneesMissile[1])) {
             coordonneesMissile = this.obtenirNouveauRandomNonTouché();
@@ -216,20 +223,131 @@
             coordonneesMissile = this.obtenirNouveauRandomNonTouché();
           }
         console.log(coordonneesMissile);
+=======
+        if (endroitsCiblees.includes(coordonneesMissile)) {
+          coordonneesMissile = this.obtenirNouveauRandomNonTouché();
+        }
+        coordonneesMissile = coordonneesMissile.split('-');
+      } else if (resultatTirPrecedent == 1 && gauche == false) {
+        coordonneesMissile = coordonneesTirPrecedent[0] + '-' + (coordonneesTirPrecedent[1] - 1);
+        coordonneesMissile = coordonneesMissile.split('-');
+        if (coordonneesMissile[2] == 0) {
+          coordonneesMissile = coordonneesTirPrecedent[0] + '-' + 2;
+        }
+
+        if (endroitsCiblees.includes(coordonneesMissile)) {
+          coordonneesMissile = this.obtenirNouveauRandomNonTouché();
+        }
+        console.log(coordonneesMissile);
+        gauche = true;
+      } else if (resultatTirPrecedent == 1 && droite == false && haut == false && bas == false) {
+        coordonneesMissile = coordonneesTirPrecedent[0] + '-' + (coordonneesTirPrecedent[1] - 1);
+        coordonneesMissile = coordonneesMissile.split('-');
+        if (coordonneesMissile[1] == 0) {
+          coordonneesMissile = coordonneesTirPrecedent[0] + '-' + 2;
+        }
+        if (endroitsCiblees.includes(coordonneesMissile)) {
+          coordonneesMissile = this.obtenirNouveauRandomNonTouché();
+        }
+        console.log(coordonneesMissile);
+        gauche = true;
+      } else if (resultatTirPrecedent == 0 && gauche == true && droite == false) {
+        coordonneesMissile = coordonneesTirPrecedent[0] + '-' + (parseInt(coordonneesTirPrecedent[1]) + 1);
+        coordonneesMissile = coordonneesMissile.split('-');
+        if (coordonneesMissile[1] >= 10) {
+          coordonneesMissile = coordonneesTirPrecedent[0] + '-' + (coordonneesTirPrecedent[1] - 1);
+        }
+        if (endroitsCiblees.includes(coordonneesMissile)) {
+          coordonneesMissile = this.obtenirNouveauRandomNonTouché();
+        }
+        console.log(coordonneesMissile);
+        droite = true;
+      } else if (resultatTirPrecedent == 1 && haut == false && bas == false) {
+        coordonneesMissile = coordonneesTirPrecedent[0] + '-' + (coordonneesTirPrecedent[1] + 1);
+        coordonneesMissile = coordonneesMissile.split('-');
+        if (coordonneesMissile[1] >= 10) {
+          coordonneesMissile = coordonneesTirPrecedent[0] + '-' + (coordonneesTirPrecedent[1] - 1);
+        }
+        if (endroitsCiblees.includes(coordonneesMissile)) {
+          coordonneesMissile = this.obtenirNouveauRandomNonTouché();
+        }
+        console.log(coordonneesMissile);
+        droite = true;
+      } else if (resultatTirPrecedent == 0 && droite == true && haut == false && bas == false) {
+        coordonneesMissile = String.fromCharCode(coordonneesTirPrecedent[0].charCodeAt(0) - 1) + '-' +
+          coordonneesTirPrecedent[1];
+        coordonneesMissile = coordonneesMissile.split('-');
+        if (coordonneesMissile[0] == '@') {
+          coordonneesMissile = String.fromCharCode(coordonneesTirPrecedent[0].charCodeAt(0) + 1) + '-' +
+            coordonneesTirPrecedent[1];
+        }
+        if (endroitsCiblees.includes(coordonneesMissile)) {
+          coordonneesMissile = this.obtenirNouveauRandomNonTouché();
+        }
+        console.log(coordonneesMissile);
+        haut = true;
+      } else if (resultatTirPrecedent == 1 && bas == false) {
+        coordonneesMissile = String.fromCharCode(coordonneesTirPrecedent[0].charCodeAt(0) - 1) + '-' +
+          coordonneesTirPrecedent[1];
+        coordonneesMissile = coordonneesMissile.split('-');
+        if (coordonneesMissile[0] == '@') {
+          coordonneesMissile = String.fromCharCode(lettrePremierMissile.charCodeAt(0) + 1) + '-' +
+            coordonneesTirPrecedent[1];
+        }
+        if (endroitsCiblees.includes(coordonneesMissile)) {
+          coordonneesMissile = this.obtenirNouveauRandomNonTouché();
+        }
+        console.log(coordonneesMissile);
+        haut = true;
+      } else if (resultatTirPrecedent == 0 && haut == true) {
+        coordonneesMissile = String.fromCharCode(lettrePremierMissile.charCodeAt(0) + 1) + '-' +
+          coordonneesTirPrecedent[1];
+        coordonneesMissile = coordonneesMissile.split('-');
+        if (coordonneesMissile[0] == 'K') {
+          coordonneesMissile = String.fromCharCode(lettrePremierMissile.charCodeAt(0) - 1) + '-' +
+            chiffrePremierMissile;
+        }
+        if (endroitsCiblees.includes(coordonneesMissile)) {
+          coordonneesMissile = this.obtenirNouveauRandomNonTouché();
+        }
+        console.log(coordonneesMissile);
+        bas = true;
+      } else if (resultatTirPrecedent == 1 && bas == true) {
+        coordonneesMissile = String.fromCharCode(coordonneesTirPrecedent[0].charCodeAt(0) + 1) + '-' +
+          coordonneesTirPrecedent[1];
+        coordonneesMissile = coordonneesMissile.split('-');
+        if (coordonneesMissile[0] == 'K') {
+          coordonneesMissile = String.fromCharCode(coordonneesTirPrecedent[0].charCodeAt(0) - 1) + '-' +
+            coordonneesTirPrecedent[1];
+          if (endroitsCiblees.includes(coordonneesMissile)) {
+            coordonneesMissile = this.obtenirNouveauRandomNonTouché();
+          }
+        }
+        if (endroitsCiblees.includes(coordonneesMissile)) {
+          coordonneesMissile = this.obtenirNouveauRandomNonTouché();
+        }
+        console.log(coordonneesMissile[0]);
+        console.log(coordonneesMissile[1]);
+>>>>>>> master
         bas = true;
       }
-      
+
       this.calculResultat(coordonneesMissile[0] + '-' + coordonneesMissile[1]);
     };
 
     obtenirNouveauRandomNonTouché() {
-      for(;;) {
-        var nouvelleCoordonneesMissile = [];
+      for (;;) {
+        let nouvelleCoordonneesMissile = [];
         const randomPourChiffre = Math.floor(Math.random() * 10) + 1;
         const randomPourLettre = String.fromCharCode(65+Math.floor(Math.random() * 10));
         nouvelleCoordonneesMissile = randomPourLettre + '-' + randomPourChiffre;
+<<<<<<< HEAD
         if(!endroitsCiblees.includes(nouvelleCoordonneesMissile)) {
           return nouvelleCoordonneesMissile;
+=======
+        if (!endroitsCiblees.includes(nouvelleCoordonneesMissile)) {
+          break;
+>>>>>>> master
         }
       }
       
@@ -243,7 +361,7 @@
     resultatLancerMissile(resultat) {
       // TODO Il va rester à aller modifier dans l'interface selon le résultat obtenue
       // La variable test c juste pour me rapeller d'aller modifier ça quand on va être rendu à l'interface
-      //L'IA DOIT PAS ÊTRE INDÉPENDANT DE LA PARTIE B?
+      // L'IA DOIT PAS ÊTRE INDÉPENDANT DE LA PARTIE B?
       const test = 0;
       if (resultat == 0) {
         test;
@@ -265,7 +383,6 @@
       return 'allo';
     }
 
-    
 
     calculResultat(coordonneesMissile) {
       console.log(coordonneesMissile);
@@ -273,8 +390,8 @@
       if (endroitsCiblees.includes(coordonneesMissile)) {
         this.lancerMissile();
       }
-      
-      
+
+
       endroitsCiblees.push(coordonneesMissile);
 
       if (this.listeBateaux.porteAvions.includes(coordonneesMissile)) {

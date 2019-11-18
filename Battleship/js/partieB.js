@@ -1,3 +1,4 @@
+/* eslint-disable no-invalid-this */
 (function() {
   // Joueurs de la partie
   const joueursPartie =
@@ -23,8 +24,11 @@
   // Liste des tire effectuer par le joueur
   const coordonneesCoupTirer = [];
 
-  let joueurCommence = 0;
-  // let partieCommencer = false;
+  let joueurGagnant = '';
+
+  let dernierTir = '';
+
+  let partieCommencer = true;
   // let estEnCoursDePlacement = false;
 
   /**
@@ -78,11 +82,10 @@
     resultatLancerMissile(resultat) {
       // TODO Il va rester à aller modifier dans l'interface selon le résultat obtenue
       // La variable test c juste pour me rapeller d'aller modifier ça quand on va être rendu à l'interface
-      const test = 0;
       if (resultat == 0) {
-        test;
+        $(dernierTir).removeClass('eau').addClass('manquer');
       } else if (resultat == 1) {
-        test;
+        $(dernierTir).removeClass('eau').addClass('touche');
       } else if (resultat == 2) {
         $('#porte-avions-joueur').removeClass('btn-info').addClass('btn-danger').prop('disabled', true);
       } else if (resultat == 3) {
@@ -101,6 +104,7 @@
     constructor() {
       this.positionBateauxJoueur = joueursPartie.joueur.listeBateaux;
       this.positionBateauxOrdinateur = joueursPartie.ordinateur.listeBateaux;
+      this.joueurCommence;
     }
 
     ajouterJoueur(joueur, ordinateur) {
@@ -108,7 +112,38 @@
       joueursPartie.ordinateur = ordinateur;
     }
 
+    jouer(coordonnee) {
+      let resultat = 0;
+      if (this.joueurCommence == 1) {
+        joueursPartie.joueur.lancerMissile(coordonnee);
+        resultat = obtenirResultatLancerJoueur(coordonnee);
+        joueursPartie.joueur.resultatLancerMissile(resultat);
+        if (partieFini()) {
+          joueurGagnant = estGagnant();
+        }
 
+        joueursPartie.ordinateur.lancerMissile(coordonnee);
+        resultat = obtenirResultatLancerOrdinateur(coordonnee);
+        joueursPartie.ordinateur.resultatLancerMissile(resultat);
+        if (partieFini()) {
+          joueurGagnant = estGagnant();
+        }
+      } else {
+        joueursPartie.ordinateur.lancerMissile(coordonnee);
+        resultat = obtenirResultatLancerOrdinateur(coordonnee);
+        joueursPartie.ordinateur.resultatLancerMissile(resultat);
+        if (partieFini()) {
+          joueurGagnant = estGagnant();
+        }
+
+        joueursPartie.joueur.lancerMissile(coordonnee);
+        resultat = obtenirResultatLancerJoueur(coordonnee);
+        joueursPartie.joueur.resultatLancerMissile(resultat);
+        if (partieFini()) {
+          joueurGagnant = estGagnant();
+        }
+      }
+    }
     /**
      * Cette fonction détermine ce que le joueur a
      * touché et renvoie le bon entier selon le résultat
@@ -119,6 +154,7 @@
       if (joueursPartie.ordinateur.listeBateaux['porte-avions'].includes(coordonneeTir)) {
         nbCoupPorteAvionIA++;
         coordonneesCoupTirer.push(coordonneeTir);
+        dernierTir = coordonneeTir;
         if (nbCoupPorteAvionIA == 5) {
           return 2;
         } else {
@@ -127,6 +163,7 @@
       } else if (joueursPartie.ordinateur.listeBateaux['cuirasse'].includes(coordonneeTir)) {
         nbCoupCuirasseIA++;
         coordonneesCoupTirer.push(coordonneeTir);
+        dernierTir = coordonneeTir;
         if (nbCoupCuirasseIA == 4) {
           return 3;
         } else {
@@ -135,6 +172,7 @@
       } else if (joueursPartie.ordinateur.listeBateaux['destroyer'].includes(coordonneeTir)) {
         nbCoupDestroyerIA++;
         coordonneesCoupTirer.push(coordonneeTir);
+        dernierTir = coordonneeTir;
         if (nbCoupDestroyerIA == 3) {
           return 4;
         } else {
@@ -143,6 +181,7 @@
       } else if (joueursPartie.ordinateur.listeBateaux['torpilleur'].includes(coordonneeTir)) {
         nbCoupTorpilleurIA++;
         coordonneesCoupTirer.push(coordonneeTir);
+        dernierTir = coordonneeTir;
         if (nbCoupTorpilleurIA == 3) {
           return 5;
         } else {
@@ -151,6 +190,7 @@
       } else if (joueursPartie.ordinateur.listeBateaux['sous-marin'].includes(coordonneeTir)) {
         nbCoupSousMarinIA++;
         coordonneesCoupTirer.push(coordonneeTir);
+        dernierTir = coordonneeTir;
         if (nbCoupSousMarinIA == 2) {
           return 6;
         } else {
@@ -158,6 +198,7 @@
         }
       } else {
         coordonneesCoupTirer.push(coordonneeTir);
+        dernierTir = coordonneeTir;
         return 0;
       }
     }
@@ -171,6 +212,7 @@
     obtenirResultatLancerOrdinateur(coordonneeTir) {
       if (joueursPartie.joueur.listeBateaux['porte-avions'].includes(coordonneeTir)) {
         nbCoupPorteAvionJ++;
+        dernierTir = coordonneeTir;
         if (nbCoupPorteAvionJ == 5) {
           return 2;
         } else {
@@ -178,6 +220,7 @@
         }
       } else if (joueursPartie.joueur.listeBateaux['cuirasse'].includes(coordonneeTir)) {
         nbCoupCuirasseJ++;
+        dernierTir = coordonneeTir;
         if (nbCoupCuirasseJ == 4) {
           return 3;
         } else {
@@ -185,6 +228,7 @@
         }
       } else if (joueursPartie.joueur.listeBateaux['destroyer'].includes(coordonneeTir)) {
         nbCoupDestroyerJ++;
+        dernierTir = coordonneeTir;
         if (nbCoupDestroyerJ == 3) {
           return 4;
         } else {
@@ -192,6 +236,7 @@
         }
       } else if (joueursPartie.joueur.listeBateaux['torpilleur'].includes(coordonneeTir)) {
         nbCoupTorpilleurJ++;
+        dernierTir = coordonneeTir;
         if (nbCoupTorpilleurJ == 3) {
           return 5;
         } else {
@@ -199,12 +244,14 @@
         }
       } else if (joueursPartie.joueur.listeBateaux['sous-marin'].includes(coordonneeTir)) {
         nbCoupSousMarinJ++;
+        dernierTir = coordonneeTir;
         if (nbCoupSousMarinJ == 2) {
           return 6;
         } else {
           return 1;
         }
       } else {
+        dernierTir = coordonneeTir;
         return 0;
       }
     }
@@ -309,6 +356,7 @@
         for (let j = 0; j < 10; j++) {
           const td = document.createElement('td');
           $(td).addClass('eau').attr('id', lettre + '-' + (j + 1));
+          $(td).attr('table', 'def');
           tr.appendChild(td);
         }
         grilleDef.appendChild(tr);
@@ -346,12 +394,20 @@
         for (let j = 0; j < 10; j++) {
           const td = document.createElement('td');
           $(td).addClass('eau').attr('id', lettre + '-' + (j + 1));
+          $(td).attr('table', 'tir');
           tr.appendChild(td);
         }
         grilleAtt.appendChild(tr);
       }
       grille.appendChild(grilleAtt);
     }
+
+    $('td[table = tir]').click(function() {
+      if (partieCommencer) {
+        const coordonnee = $(this).attr('id');
+        partie.jouer(coordonnee);
+      }
+    });
 
     // TODO vérifier comment arranger cette erreur
     function caseEnterCouleur() {
