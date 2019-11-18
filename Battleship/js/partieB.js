@@ -23,7 +23,6 @@
   // Liste des tire effectuer par le joueur
   const coordonneesCoupTirer = [];
 
-  let joueurCommence = 0;
   // let partieCommencer = false;
   // let estEnCoursDePlacement = false;
 
@@ -101,6 +100,7 @@
     constructor() {
       this.positionBateauxJoueur = joueursPartie.joueur.listeBateaux;
       this.positionBateauxOrdinateur = joueursPartie.ordinateur.listeBateaux;
+      this.joueurCommence;
     }
 
     ajouterJoueur(joueur, ordinateur) {
