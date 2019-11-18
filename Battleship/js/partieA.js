@@ -10,12 +10,18 @@
   let cptSousMarinIA = 0;
   let cptGlobalTir = 0;
   let ciblesTouchees = [];
+  let endroitsCiblees = [];
   let gauche = false;
   let droite = false;
   let haut = false;
   let bas = false;
   let lettrePremierMissile = 0;
   let chiffrePremierMissile = 0;
+  let porteAvionsCouler = false;
+  let cuirasseCouler = false;
+  let destroyerCouler = false;
+  let torpilleurCouler = false;
+  let sousMarinCouler = false;
 
   class IA {
     constructor() {
@@ -119,7 +125,6 @@
         }
         console.log(coordonneesMissile);
         gauche = true;
-        console.log('ON PASSE DANS GAUCHE');
       } else if (resultatTirPrecedent == 1 && droite == false && haut == false && bas == false) {
         coordonneesMissile = coordonneesTirPrecedent[0] + '-' + (coordonneesTirPrecedent[2] - 1);
         if(coordonneesMissile[2] == 0) {
@@ -127,39 +132,33 @@
         }
         console.log(coordonneesMissile);
         gauche = true;
-        console.log('ON PASSE DANS GAUCHE');
       } else if (resultatTirPrecedent == 0 && gauche == true && droite == false) {
         coordonneesMissile = coordonneesTirPrecedent[0] + '-' + (chiffrePremierMissile + 1);
         console.log(coordonneesMissile);
         droite = true;
-        console.log('ON PASSE DANS DROITE');
       } else if (resultatTirPrecedent == 1 && haut == false && bas == false) {
         coordonneesMissile = coordonneesTirPrecedent[0] + '-' + (coordonneesTirPrecedent[2] + 1);
         console.log(coordonneesMissile);
         droite = true;
-        console.log('ON PASSE DANS DROITE');
       } else if (resultatTirPrecedent == 0 && droite == true && haut == false && bas == false) {
         coordonneesMissile = String.fromCharCode(lettrePremierMissile.charCodeAt(0) - 1) + '-' + chiffrePremierMissile;
         console.log(coordonneesMissile);
         haut = true;
-        console.log('ON PASSE EN HAUT');
       } else if (resultatTirPrecedent == 1 && bas == false) {
         coordonneesMissile = String.fromCharCode(coordonneesTirPrecedent[0].charCodeAt(0) - 1) + '-' +
           chiffrePremierMissile;
         console.log(coordonneesMissile);
         haut = true;
-        console.log('ON PASSE EN HAUT');
       } else if (resultatTirPrecedent == 0 && haut == true) {
         coordonneesMissile = String.fromCharCode(lettrePremierMissile.charCodeAt(0) + 1) + '-' + chiffrePremierMissile;
         console.log(coordonneesMissile);
         bas = true;
-        console.log('ON PASSE EN BAS');
       } else if (resultatTirPrecedent == 1 && bas == true) {
         coordonneesMissile = String.fromCharCode(coordonneesTirPrecedent[0].charCodeAt(0) + 1) + '-' + chiffrePremierMissile;
         console.log(coordonneesMissile);
         bas = true;
-        console.log('ON PASSE EN BAS');
       }
+      
       this.calculResultat(coordonneesMissile);
     };
 
@@ -196,12 +195,14 @@
 
     calculResultat(coordonneesMissile) {
       console.log(coordonneesMissile);
+      console.log(endroitsCiblees);
+      if (endroitsCiblees.includes(coordonneesMissile)) {
+        this.lancerMissile();
+      }
       coordonneesTirPrecedent = coordonneesMissile;
-      var porteAvionsCouler = false;
-      var cuirasseCouler = false;
-      var destroyerCouler = false;
-      var torpilleurCouler = false;
-      var sousMarinCouler = false;
+      
+      endroitsCiblees.push(coordonneesMissile);
+
 
       if (this.listeBateaux.porteAvions.includes(coordonneesMissile)) {
         ciblesTouchees.push(coordonneesMissile);
@@ -240,34 +241,35 @@
         this.resultatLancerMissile(2);
         console.log('Porte-Avions détruit!');
         porteAvionsCouler = true;
-        gauche, droite, haut, bas = false;
+        gauche = false, droite = false, haut = false, bas = false;
       } else if (cptCuirasseIA >= 4 && cuirasseCouler == false) {
         this.resultatLancerMissile(3);
         console.log('Cuirasse détruite!');
-        cuirasseCouler == true;
-      } else if (cptDestroyerIA >= 3&& destroyerCouler == false) {
+        cuirasseCouler = true;
+        gauche = false, droite = false, haut = false, bas = false;
+      } else if (cptDestroyerIA >= 3 && destroyerCouler == false) {
         this.resultatLancerMissile(4);
         console.log('Destroyer détruit!');
         destroyerCouler = true;
-        gauche, droite, haut, bas = false;
+        gauche = false, droite = false, haut = false, bas = false;
       } else if (cptTorpilleurIA >= 3 && torpilleurCouler == false) {
         this.resultatLancerMissile(5);
         console.log('Torpilleur détruit!');
         torpilleurCouler = true;
-        gauche, droite, haut, bas = false;
+        gauche = false, droite = false, haut = false, bas = false;
       } else if (cptSousMarinIA >= 2 && sousMarinCouler == false) {
         this.resultatLancerMissile(5);
         console.log('Torpilleur détruit!');
         sousMarinCouler = true;
-        gauche, droite, haut, bas = false;
+        gauche = false, droite = false, haut = false, bas = false;
       } else if (cptGlobalTir == 1) {
         this.resultatLancerMissile(1);
         console.log('TOUCHÉ!');
-        cptGlobalTir = 0;
       } else {
         console.log('À l\'eau');
         this.resultatLancerMissile(0);
       }
+      cptGlobalTir = 0;
     }
     // ...
   }
