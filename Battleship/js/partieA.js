@@ -127,8 +127,9 @@
         
       } else if ((resultatTirPrecedent == 1 && droite == false && haut == false && bas == false)) {
         //GAUCHE SI RÉUSSI
+        var coordonneeChiffre = parseInt(coordonneesMissile[1]) + 1;
         coordonneesMissile = coordonneesMissile[0] + '-' + (parseInt(coordonneesMissile[1]) - 1);
-          if (parseInt(coordonneesMissile[2]) == 0 || endroitsCiblees.includes(coordonneesMissile[0] + '-' + coordonneesMissile[2])) {
+          if (parseInt(coordonneesMissile[2]) == 0 || endroitsCiblees.includes(coordonneesMissile[0] + '-' +  coordonneeChiffre)) {
             coordonneesMissile = this.obtenirNouveauRandomNonTouché();
           }
         console.log(coordonneesMissile);
@@ -137,7 +138,7 @@
         //DROITE SI RÉUSSI  
         var coordonneeChiffre = parseInt(coordonneesMissile[1]) + 1;
         coordonneesMissile = coordonneesMissile[0] + '-' + coordonneeChiffre;
-        if ((coordonneeChiffre > 10) || (endroitsCiblees.includes(coordonneesMissile[0] + '-' + coordonneesMissile[2]))) {
+        if ((coordonneeChiffre > 10) || (endroitsCiblees.includes(coordonneesMissile[0] + '-' +  coordonneeChiffre))) {
             coordonneesMissile = this.obtenirNouveauRandomNonTouché();   
           }
         console.log(coordonneesMissile);
@@ -251,26 +252,31 @@
         console.log('Porte-Avions détruit!');
         porteAvionsCouler = true;
         this.remettreDirectionsAFalse();
+        tirPrecedentReussi = false;
       } else if (cptCuirasseIA >= 4 && cuirasseCouler == false) {
         this.resultatLancerMissile(3);
         console.log('Cuirasse détruite!');
         cuirasseCouler = true;
         this.remettreDirectionsAFalse();
+        tirPrecedentReussi = false;
       } else if (cptDestroyerIA >= 3 && destroyerCouler == false) {
         this.resultatLancerMissile(4);
         console.log('Destroyer détruit!');
         destroyerCouler = true;
         this.remettreDirectionsAFalse();
+        tirPrecedentReussi = false;
       } else if (cptTorpilleurIA >= 3 && torpilleurCouler == false) {
         this.resultatLancerMissile(5);
         console.log('Torpilleur détruit!');
         torpilleurCouler = true;
         this.remettreDirectionsAFalse();
+        tirPrecedentReussi = false;
       } else if (cptSousMarinIA >= 2 && sousMarinCouler == false) {
         this.resultatLancerMissile(6);
         console.log('Sous-Marin détruit!');
         sousMarinCouler = true;
         this.remettreDirectionsAFalse();
+        tirPrecedentReussi = false;
       } else if (cptGlobalTir == 1) {
         this.resultatLancerMissile(1);
         coordonneesDernierMissile = coordonneesMissile.split('-');
