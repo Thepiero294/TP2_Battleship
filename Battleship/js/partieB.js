@@ -123,7 +123,7 @@
 
     jouer(coordonnee) {
       let resultat = 0;
-      if (this.joueurCommence == 1) {
+      if (this.joueurCommence == 0) {
         joueursPartie.joueur.lancerMissile(coordonnee);
         resultat = this.obtenirResultatLancerJoueur(coordonnee);
         joueursPartie.joueur.resultatLancerMissile(resultat);
@@ -131,19 +131,19 @@
           joueurGagnant = this.estGagnant();
         }
 
-        // joueursPartie.ordinateur.lancerMissile(coordonnee);
-        // resultat = this.obtenirResultatLancerOrdinateur(coordonnee);
+        joueursPartie.ordinateur.lancerMissile(coordonnee);
+        // resultat = joueursPartie.ordinateur.calculResultat(coordonnee);
         // joueursPartie.ordinateur.resultatLancerMissile(resultat);
-        // if (this.partieFini()) {
-        //   joueurGagnant = this.estGagnant();
-        // }
+        if (this.partieFini()) {
+          joueurGagnant = this.estGagnant();
+        }
       } else {
-        // joueursPartie.ordinateur.lancerMissile(coordonnee);
-        // resultat = this.obtenirResultatLancerOrdinateur(coordonnee);
+        joueursPartie.ordinateur.lancerMissile(coordonnee);
+        // resultat = joueursPartie.ordinateur.calculResultat(coordonnee);
         // joueursPartie.ordinateur.resultatLancerMissile(resultat);
-        // if (this.partieFini()) {
-        //   joueurGagnant = this.estGagnant();
-        // }
+        if (this.partieFini()) {
+          joueurGagnant = this.estGagnant();
+        }
 
         joueursPartie.joueur.lancerMissile(coordonnee);
         resultat = this.obtenirResultatLancerJoueur(coordonnee);
@@ -439,7 +439,7 @@
     caseEnterCouleur();
 
     $('td').click(function() {
-      if ($(this).hasClass('tir') || partieCommencer) {
+      if ($(this).hasClass('tir') && partieCommencer) {
         const coordonnee = $(this).attr('id');
         partie.jouer(coordonnee);
       }
