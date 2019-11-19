@@ -1,28 +1,17 @@
+/* eslint-disable prefer-spread */
 (function() {
   // Tu peux le remettre normal c juste que si il était pas en commentaire il y avait un erreur eslint
   // let cptNombresBateauxCoules = 0;
   let resultatTirPrecedent = 0;
   let coordonneesPremierTirRéussi;
   let coordonneesDernierMissile;
-  let cptPorteAvionsIA = 0;
-  let cptCuirasseIA = 0;
-  let cptDestroyerIA = 0;
-  let cptTorpilleurIA = 0;
-  let cptSousMarinIA = 0;
-  let cptGlobalTir = 0;
-  let ciblesTouchees = [];
-  let endroitsCiblees = [];
+  let coordonneesMissile = [];
+  const ciblesTouchees = [];
+  const endroitsCiblees = [];
   let gauche = false;
   let droite = false;
   let haut = false;
   let bas = false;
-  let lettrePremierMissile = 0;
-  let chiffrePremierMissile = 0;
-  let porteAvionsCouler = false;
-  let cuirasseCouler = false;
-  let destroyerCouler = false;
-  let torpilleurCouler = false;
-  let sousMarinCouler = false;
   let tirPrecedentReussi = false;
 
   class IA {
@@ -55,6 +44,13 @@
       };
     };
 
+    /**
+     * Fonction qui sert à créer les bateaux pour l'utilisateur du qu'on a pas eu le temps
+     * de faire le placement bateaux
+     * @param {Number} nbCoordonnees Nombre de coordonnées utilisée
+     * @param {string} coordonneesUtilisees Coordonnées
+     * @return {string} Retourne une coordonnée
+     */
     creationBateau(nbCoordonnees, coordonneesUtilisees) {
       let coordonneesBateau = [];
 
@@ -100,6 +96,10 @@
       return coordonneesBateau;
     };
 
+    /**
+     * Vérifie la direction du tir
+     * @return {boolean} Retourne vrai ou faux
+     */
     verificationDirection() {
       if (gauche == false && droite == false && haut == false && bas == false) {
         return true;
@@ -109,8 +109,11 @@
       return false;
     }
 
+    /**
+     * Fonction qui vérifie si la coordonnée du tir est valide ou n'a pas déjà été effectué
+     * @return {string} Retourne la coordonnée si elle est valide
+     */
     lancerMissile() {
-      let coordonneesMissile;
       if (resultatTirPrecedent == 1) {
         coordonneesMissile = coordonneesDernierMissile;
       }
@@ -122,7 +125,6 @@
       if (resultatTirPrecedent === undefined || (resultatTirPrecedent == 0 && this.verificationDirection()) ||
         (resultatTirPrecedent != 0 && resultatTirPrecedent != 1)) {
         coordonneesMissile = this.obtenirNouveauRandomNonTouché();
-        console.log(coordonneesMissile);
       } else if ((resultatTirPrecedent == 1 && droite == false && haut == false && bas == false)) {
         // GAUCHE SI RÉUSSI
         const coordonneeChiffre = parseInt(coordonneesMissile[1]) + 1;
@@ -131,7 +133,6 @@
           '-' + coordonneeChiffre)) {
           coordonneesMissile = this.obtenirNouveauRandomNonTouché();
         }
-        console.log(coordonneesMissile);
         gauche = true;
       } else if ((resultatTirPrecedent == 0 && gauche == true && droite == false) ||
         (resultatTirPrecedent == 1 && haut == false && bas == false)) {
@@ -141,7 +142,6 @@
         if ((coordonneeChiffre > 10) || (endroitsCiblees.includes(coordonneesMissile[0] + '-' + coordonneeChiffre))) {
           coordonneesMissile = this.obtenirNouveauRandomNonTouché();
         }
-        console.log(coordonneesMissile);
         droite = true;
       } else if ((resultatTirPrecedent == 0 && droite == true && haut == false) ||
         (resultatTirPrecedent == 1 && bas == false)) {
@@ -152,7 +152,6 @@
           coordonneesMissile[2])) {
           coordonneesMissile = this.obtenirNouveauRandomNonTouché();
         }
-        console.log(coordonneesMissile);
         haut = true;
       } else {
         // BAS SI RÉUSSI
@@ -162,16 +161,22 @@
           coordonneesMissile[2])) {
           coordonneesMissile = this.obtenirNouveauRandomNonTouché();
         }
-        console.log(coordonneesMissile);
       }
 
+      // TODO Changer ça pour un return
       if (coordonneesMissile[3] != undefined && coordonneesMissile[3] == 0) {
-        this.calculResultat(coordonneesMissile[0] + '-' + coordonneesMissile[2] + coordonneesMissile[3]);
+        endroitsCiblees.push(coordonneesMissile[0] + '-' + coordonneesMissile[2] + coordonneesMissile[3]);
+        return coordonneesMissile;
       } else {
-        this.calculResultat(coordonneesMissile[0] + '-' + coordonneesMissile[2]);
+        endroitsCiblees.push(coordonneesMissile[0] + '-' + coordonneesMissile[2]);
+        return coordonneesMissile;
       }
     };
 
+    /**
+     * Renvoie une coordonnée random si appelé
+     * @return {string} Retourne une coordonnée
+     */
     obtenirNouveauRandomNonTouché() {
       for (;;) {
         let nouvelleCoordonneesMissile = [];
@@ -189,15 +194,15 @@
      * @param {Number} resultat Résultat du lancé
      */
     resultatLancerMissile(resultat) {
-      // TODO Il va rester à aller modifier dans l'interface selon le résultat obtenue
-      // La variable test c juste pour me rapeller d'aller modifier ça quand on va être rendu à l'interface
-      // L'IA DOIT PAS ÊTRE INDÉPENDANT DE LA PARTIE B?
       if (resultat == 0) {
         $('.table-def').find('#' + endroitsCiblees[endroitsCiblees.length-1]).removeClass('eau').addClass('manquer');
-        // console.log(coordonneesCoupTirer);
       } else if (resultat == 1) {
         $('.table-def').find('#' + endroitsCiblees[endroitsCiblees.length-1]).removeClass('eau').addClass('touche');
-        // console.log(coordonneesCoupTirer);
+        coordonneesDernierMissile = coordonneesMissile.split('-');
+        if (!tirPrecedentReussi) {
+          coordonneesPremierTirRéussi = coordonneesMissile.split('-');
+          tirPrecedentReussi = true;
+        }
       } else if (resultat == 2) {
         $('#porte-avions-joueur').removeClass('btn-info').addClass('btn-danger').prop('disabled', true);
         $('.table-def').find('#' + endroitsCiblees[endroitsCiblees.length-1]).removeClass('eau').addClass('touche');
@@ -215,107 +220,35 @@
         $('.table-def').find('#' + endroitsCiblees[endroitsCiblees.length-1]).removeClass('eau').addClass('touche');
       }
       resultatTirPrecedent = resultat;
-      console.log(resultat);
     }
 
-
-    calculResultat(coordonneesMissile) {
-      console.log(coordonneesMissile);
-      console.log(endroitsCiblees);
-
-
-      endroitsCiblees.push(coordonneesMissile);
-
-      if (this.listeBateaux['porte-avions'].includes(coordonneesMissile)) {
-        this.calculCompteur(coordonneesMissile, 'YUP! PORTE-AVION');
-        ++cptPorteAvionsIA;
-        ++cptGlobalTir;
-      } else if (this.listeBateaux['cuirasse'].includes(coordonneesMissile)) {
-        this.calculCompteur(coordonneesMissile, 'YUP! CUIRASSE');
-        ++cptCuirasseIA;
-        ++cptGlobalTir;
-      } else if (this.listeBateaux['destroyer'].includes(coordonneesMissile)) {
-        this.calculCompteur(coordonneesMissile, 'YUP! DESTROYER');
-        ++cptDestroyerIA;
-        ++cptGlobalTir;
-      } else if (this.listeBateaux['torpilleur'].includes(coordonneesMissile)) {
-        this.calculCompteur(coordonneesMissile, 'YUP! TORPILLEUR');
-        ++cptTorpilleurIA;
-        ++cptGlobalTir;
-      } else if (this.listeBateaux['sous-marin'].includes(coordonneesMissile)) {
-        this.calculCompteur(coordonneesMissile, 'YUP! SOUS-MARIN');
-        ++cptSousMarinIA;
-        ++cptGlobalTir;
-      } else console.log('Tir raté');
-
-      console.log('PORTE-AVION: ' + cptPorteAvionsIA);
-      console.log('CUIRASSE: ' + cptCuirasseIA);
-      console.log('DESTROYER: ' + cptDestroyerIA);
-      console.log('TORPILLEUR: ' + cptTorpilleurIA);
-      console.log('SOUS-MARIN: ' + cptSousMarinIA);
-
-      if (cptPorteAvionsIA >= 5 && porteAvionsCouler == false) {
-        this.resultatLancerMissile(2);
-        console.log('Porte-Avions détruit!');
-        porteAvionsCouler = true;
-        this.remettreDirectionsAFalse();
-        tirPrecedentReussi = false;
-      } else if (cptCuirasseIA >= 4 && cuirasseCouler == false) {
-        this.resultatLancerMissile(3);
-        console.log('Cuirasse détruite!');
-        cuirasseCouler = true;
-        this.remettreDirectionsAFalse();
-        tirPrecedentReussi = false;
-      } else if (cptDestroyerIA >= 3 && destroyerCouler == false) {
-        this.resultatLancerMissile(4);
-        console.log('Destroyer détruit!');
-        destroyerCouler = true;
-        this.remettreDirectionsAFalse();
-        tirPrecedentReussi = false;
-      } else if (cptTorpilleurIA >= 3 && torpilleurCouler == false) {
-        this.resultatLancerMissile(5);
-        console.log('Torpilleur détruit!');
-        torpilleurCouler = true;
-        this.remettreDirectionsAFalse();
-        tirPrecedentReussi = false;
-      } else if (cptSousMarinIA >= 2 && sousMarinCouler == false) {
-        this.resultatLancerMissile(6);
-        console.log('Sous-Marin détruit!');
-        sousMarinCouler = true;
-        this.remettreDirectionsAFalse();
-        tirPrecedentReussi = false;
-      } else if (cptGlobalTir == 1) {
-        this.resultatLancerMissile(1);
-        coordonneesDernierMissile = coordonneesMissile.split('-');
-        if (!tirPrecedentReussi) {
-          coordonneesPremierTirRéussi = coordonneesMissile.split('-');
-          tirPrecedentReussi = true;
-        }
-        console.log('TOUCHÉ!');
-      } else {
-        console.log('À l\'eau');
-        this.resultatLancerMissile(0);
-        tirPrecedentReussi = false;
-      }
-      cptGlobalTir = 0;
-    }
-
-    calculCompteur(coordonneesMissile, message) {
+    /**
+     * Calcule le nombre de cible touchées
+     * @param {*} coordonneesMissile Coordonnée touché
+     */
+    calculCompteur(coordonneesMissile) {
       ciblesTouchees.push(coordonneesMissile);
-      console.log(message);
     }
 
+    /**
+     * Sert à réinitialiser les directions
+     */
     remettreDirectionsAFalse() {
       gauche = false, droite = false, haut = false, bas = false;
     }
-    // ...
+
+    /**
+     * Fonction qui sert pour recommencer un partie
+     * @return {object} Retourne un nouvelle instance de IA
+     */
+    recommencerPartie() {
+      const monIA = new IA();
+      return window.IA = monIA;
+    }
   }
 
   const monIA = new IA();
   window.IA = monIA; // Laisser cette variable la, c'est de cette façon qu'on a accès au IA dans la partie B.
-  console.log(monIA.listeBateaux);
-  const monIA2 = new IA();
-  console.log(monIA2.listeBateaux);
   $(document).keypress(function(e) {
     if (e.which == 13) {
       monIA.lancerMissile();

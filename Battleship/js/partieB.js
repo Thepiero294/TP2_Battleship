@@ -1,3 +1,4 @@
+/* eslint-disable prefer-spread */
 /* eslint-disable no-invalid-this */
 (function() {
   // Joueurs de la partie
@@ -8,11 +9,19 @@
   };
 
   // Compteur pour nombre de coup touché sur les bateaux du joueurs
-  let nbCoupPorteAvionJ = 0;
-  let nbCoupCuirasseJ = 0;
-  let nbCoupDestroyerJ = 0;
-  let nbCoupTorpilleurJ = 0;
-  let nbCoupSousMarinJ = 0;
+  let cptPorteAvionsIA = 0;
+  let cptCuirasseIA = 0;
+  let cptDestroyerIA = 0;
+  let cptTorpilleurIA = 0;
+  let cptSousMarinIA = 0;
+  let cptGlobalTir = 0;
+
+  // Contient si les bateaux sont coulés ou non
+  let porteAvionsCouler = false;
+  let cuirasseCouler = false;
+  let destroyerCouler = false;
+  let torpilleurCouler = false;
+  let sousMarinCouler = false;
 
   // Compteur pour nombre de coup touché sur les bateaux de l'ordinateur
   let nbCoupPorteAvionIA = 0;
@@ -22,34 +31,44 @@
   let nbCoupSousMarinIA = 0;
 
   // Liste des tire effectuer par le joueur
-  const coordonneesCoupTirer = [];
+  let coordonneesCoupTirer = [];
 
+  // Contient le joueur gagnant
   let joueurGagnant = '';
 
+  // Contient le dernier tir effectué
   let dernierTir = '';
 
-  let partieCommencer = true;
-  // let estEnCoursDePlacement = false;
+  // Contient la coordonnée du tir pour L'IA
+  let coords = '';
+
+  // Vérifie si la partie est commencée ou non
+  const partieCommencer = true;
 
   /**
-   * Retourne un nombre entre le chiffre minimum (inclus) et maximum (inclus)
-   * @param {number} nbMin Nombre minimum de l'intervalle
-   * @param {number} nbMax Nombre maximum de l'intervalle
-   * @return {number} Retourne un nombre entier entre l'intervalle
+   * Fonction qui assigne des couleurs au bateaux dans l'interface.
    */
-  function nombreAleatoireIntervalle(nbMin, nbMax) {
-    return Math.floor(Math.random() * (nbMax - nbMin + 1)) + nbMin;
+  function couleurCaseBateaux() {
+    for (let i = 0; i < 5; i++) {
+      $('.table-def').find('#' + joueursPartie.joueur.listeBateaux['porte-avions'][i]).addClass('bateau');
+    }
+    for (let i = 0; i < 4; i++) {
+      $('.table-def').find('#' + joueursPartie.joueur.listeBateaux['cuirasse'][i]).addClass('bateau');
+    }
+    for (let i = 0; i < 3; i++) {
+      $('.table-def').find('#' + joueursPartie.joueur.listeBateaux['destroyer'][i]).addClass('bateau');
+    }
+    for (let i = 0; i < 3; i++) {
+      $('.table-def').find('#' + joueursPartie.joueur.listeBateaux['torpilleur'][i]).addClass('bateau');
+    }
+    for (let i = 0; i < 2; i++) {
+      $('.table-def').find('#' + joueursPartie.joueur.listeBateaux['sous-marin'][i]).addClass('bateau');
+    }
   }
 
   class Joueur {
     constructor() {
-      this.listeBateaux = {
-        'porte-avions': ['A-1', 'A-2', 'A-3', 'A-4', 'A-5'],
-        'cuirasse': ['B-1', 'B-2', 'B-3', 'B-4'],
-        'destroyer': ['C-1', 'C-2', 'C-3'],
-        'torpilleur': ['D-1', 'D-2', 'D-3'],
-        'sous-marin': ['E-1', 'E-2'],
-      };
+      this.listeBateaux = this.placerBateaux();
     }
 
     /**
@@ -57,8 +76,78 @@
      * @return {Array} return la liste des bateaux avec leur positions
      */
     placerBateaux() {
-      return this.listeBateaux;
+      const coordonneesUtilisees = [];
+
+      const coordonneesPorteAvion = this.creationBateau(4, coordonneesUtilisees);
+
+      const coordonneesCuirasse = this.creationBateau(3, coordonneesUtilisees);
+
+      const coordonneesDestroyer = this.creationBateau(2, coordonneesUtilisees);
+
+      const coordonneesTorpilleur = this.creationBateau(2, coordonneesUtilisees);
+
+      const coordonneesSousMarin = this.creationBateau(1, coordonneesUtilisees);
+
+      return {
+        'porte-avions': coordonneesPorteAvion,
+        'cuirasse': coordonneesCuirasse,
+        'destroyer': coordonneesDestroyer,
+        'torpilleur': coordonneesTorpilleur,
+        'sous-marin': coordonneesSousMarin,
+      };
     }
+
+    /**
+     * Fonction qui sert à créer les bateaux pour l'utilisateur du qu'on a pas eu le temps
+     * de faire le placement bateaux
+     * @param {Number} nbCoordonnees Nombre de coordonnées utilisée
+     * @param {string} coordonneesUtilisees Coordonnées
+     * @return {string} Retourne une coordonnée
+     */
+    creationBateau(nbCoordonnees, coordonneesUtilisees) {
+      let coordonneesBateau = [];
+
+      const randomPourChiffre = Math.floor(Math.random() * 10) + 1;
+      const randomPourLettre = String.fromCharCode(65+Math.floor(Math.random() * 10));
+      const randomPourDirection = Math.floor(Math.random() * 10);
+
+      coordonneesBateau.push(randomPourLettre + '-' + randomPourChiffre);
+
+      if (randomPourDirection == 0) {
+        for (let i = 1; i <= nbCoordonnees; ++i) {
+          coordonneesBateau.push(randomPourLettre + '-' + (randomPourChiffre + i));
+        }
+        // SI UN CHIFFRE DÉPASSE 10
+        if (randomPourChiffre + 4 > 10) {
+          coordonneesBateau = [];
+          for (let i = nbCoordonnees; i > 0; i--) {
+            coordonneesBateau.push(randomPourLettre + '-' + (randomPourChiffre - i));
+          }
+          coordonneesBateau.push(randomPourLettre + '-' + randomPourChiffre);
+        }
+      } else {
+        for (let i = 1; i <= nbCoordonnees; ++i) {
+          coordonneesBateau.push(String.fromCharCode(randomPourLettre.charCodeAt(0) + i) + '-' + randomPourChiffre);
+        }
+        // SI UNE LETTRE DÉPASSE LA LETTRE J
+        if (randomPourLettre.charCodeAt(0) + 4 > 74) {
+          coordonneesBateau = [];
+          for (let i = nbCoordonnees; i > 0; i--) {
+            coordonneesBateau.push(String.fromCharCode(randomPourLettre.charCodeAt(0) - i) + '-' + randomPourChiffre);
+          }
+          coordonneesBateau.push(randomPourLettre + '-' + randomPourChiffre);
+        }
+      }
+
+      for (let i = 0; i < coordonneesBateau.length; i++) {
+        if (coordonneesUtilisees.includes(coordonneesBateau[i])) {
+          const nouveauBateau = this.creationBateau(nbCoordonnees, coordonneesUtilisees);
+          return nouveauBateau;
+        }
+      }
+      coordonneesUtilisees.push.apply(coordonneesUtilisees, coordonneesBateau);
+      return coordonneesBateau;
+    };
 
     /**
      * Fonction qui vérifie si la coordonnée du tir est valide ou n'a pas déjà été effectué
@@ -85,26 +174,30 @@
       // TODO Il va rester à aller modifier dans l'interface selon le résultat obtenue
       // La variable test c juste pour me rapeller d'aller modifier ça quand on va être rendu à l'interface
       if (resultat == 0) {
-        $('.table-att').find('#' + dernierTir).removeClass('eau').addClass('manquer');
-        console.log(coordonneesCoupTirer);
+        $('.table-att').find('#' + dernierTir).addClass('manquer');
       } else if (resultat == 1) {
         $('.table-att').find('#' + dernierTir).removeClass('eau').addClass('touche');
-        console.log(coordonneesCoupTirer);
+        $('.table-att').find('#' + dernierTir).removeClass('bateau').addClass('touche');
       } else if (resultat == 2) {
         $('#porte-avions-ia').removeClass('btn-info').addClass('btn-danger').prop('disabled', true);
         $('.table-att').find('#' + dernierTir).removeClass('eau').addClass('touche');
+        $('.table-att').find('#' + dernierTir).removeClass('bateau').addClass('touche');
       } else if (resultat == 3) {
         $('#cuirasse-ia').removeClass('btn-info').addClass('btn-danger').prop('disabled', true);
         $('.table-att').find('#' + dernierTir).removeClass('eau').addClass('touche');
+        $('.table-att').find('#' + dernierTir).removeClass('bateau').addClass('touche');
       } else if (resultat == 4) {
         $('#destroyer-ia').removeClass('btn-info').addClass('btn-danger').prop('disabled', true);
         $('.table-att').find('#' + dernierTir).removeClass('eau').addClass('touche');
+        $('.table-att').find('#' + dernierTir).removeClass('bateau').addClass('touche');
       } else if (resultat == 5) {
         $('#torpilleur-ia').removeClass('btn-info').addClass('btn-danger').prop('disabled', true);
         $('.table-att').find('#' + dernierTir).removeClass('eau').addClass('touche');
+        $('.table-att').find('#' + dernierTir).removeClass('bateau').addClass('touche');
       } else if (resultat == 6) {
         $('#sous-marin-ia').removeClass('btn-info').addClass('btn-danger').prop('disabled', true);
         $('.table-att').find('#' + dernierTir).removeClass('eau').addClass('touche');
+        $('.table-att').find('#' + dernierTir).removeClass('bateau').addClass('touche');
       }
     }
   }
@@ -116,11 +209,77 @@
       this.joueurCommence = 1;
     }
 
+    /**
+     * Fonction qui ajoute les joueurs pour le jeu.
+     * @param {Object} joueur Le joueur humain
+     * @param {Object} ordinateur Le joueur ordinateur
+     */
     ajouterJoueur(joueur, ordinateur) {
       joueursPartie.joueur = joueur;
       joueursPartie.ordinateur = ordinateur;
     }
 
+    /**
+     * Fonction qui sert à tout réinitialiser pour recommencer une partie
+     */
+    recommencerPartie() {
+      const reponseQuestion = confirm('Voulez-vous vraiment recommencer?');
+      if (reponseQuestion) {
+        partie = new Battleship();
+        const joueur1 = new Joueur();
+        const joueur2 = joueursPartie.ordinateur.recommencerPartie();
+
+        partie.ajouterJoueur(joueur1, joueur2);
+
+        $('.manquer').removeClass('manquer').addClass('eau');
+        $('.touche').removeClass('touche').addClass('eau');
+        $('.bateau').removeClass('bateau').addClass('eau');
+
+        $('#porte-avions-ia').removeClass('btn-danger').addClass('btn-info').prop('disabled', false);
+        $('#cuirasse-ia').removeClass('btn-danger').addClass('btn-info').prop('disabled', false);
+        $('#destroyer-ia').removeClass('btn-danger').addClass('btn-info').prop('disabled', false);
+        $('#torpilleur-ia').removeClass('btn-danger').addClass('btn-info').prop('disabled', false);
+        $('#sous-marin-ia').removeClass('btn-danger').addClass('btn-info').prop('disabled', false);
+        $('#porte-avions-joueur').removeClass('btn-danger').addClass('btn-info').prop('disabled', false);
+        $('#cuirasse-joueur').removeClass('btn-danger').addClass('btn-info').prop('disabled', false);
+        $('#destroyer-joueur').removeClass('btn-danger').addClass('btn-info').prop('disabled', false);
+        $('#torpilleur-joueur').removeClass('btn-danger').addClass('btn-info').prop('disabled', false);
+        $('#sous-marin-joueur').removeClass('btn-danger').addClass('btn-info').prop('disabled', false);
+
+        couleurCaseBateaux();
+
+        cptPorteAvionsIA = 0;
+        cptCuirasseIA = 0;
+        cptDestroyerIA = 0;
+        cptTorpilleurIA = 0;
+        cptSousMarinIA = 0;
+        cptGlobalTir = 0;
+
+        porteAvionsCouler = false;
+        cuirasseCouler = false;
+        destroyerCouler = false;
+        torpilleurCouler = false;
+        sousMarinCouler = false;
+
+        // Compteur pour nombre de coup touché sur les bateaux de l'ordinateur
+        nbCoupPorteAvionIA = 0;
+        nbCoupCuirasseIA = 0;
+        nbCoupDestroyerIA = 0;
+        nbCoupTorpilleurIA = 0;
+        nbCoupSousMarinIA = 0;
+
+        // Liste des tire effectuer par le joueur
+        coordonneesCoupTirer = [];
+        joueurGagnant = '';
+        dernierTir = '';
+        coords = '';
+      }
+    }
+
+    /**
+     * Fonction qui sert à lancer les missiles de chaque joueurs pour jouer
+     * @param {string} coordonnee La coordonnée du tir effectué
+     */
     jouer(coordonnee) {
       let resultat = 0;
       if (this.joueurCommence == 0) {
@@ -129,20 +288,23 @@
         joueursPartie.joueur.resultatLancerMissile(resultat);
         if (this.partieFini()) {
           joueurGagnant = this.estGagnant();
+          alert(joueurGagnant);
         }
 
-        joueursPartie.ordinateur.lancerMissile(coordonnee);
-        // resultat = joueursPartie.ordinateur.calculResultat(coordonnee);
-        // joueursPartie.ordinateur.resultatLancerMissile(resultat);
+        coords = joueursPartie.ordinateur.lancerMissile();
+        resultat = this.calculResultat(coords);
+        joueursPartie.ordinateur.resultatLancerMissile(resultat);
         if (this.partieFini()) {
           joueurGagnant = this.estGagnant();
+          alert(joueurGagnant);
         }
       } else {
-        joueursPartie.ordinateur.lancerMissile(coordonnee);
-        // resultat = joueursPartie.ordinateur.calculResultat(coordonnee);
-        // joueursPartie.ordinateur.resultatLancerMissile(resultat);
+        coords = joueursPartie.ordinateur.lancerMissile();
+        resultat = this.calculResultat(coords);
+        joueursPartie.ordinateur.resultatLancerMissile(resultat);
         if (this.partieFini()) {
           joueurGagnant = this.estGagnant();
+          alert(joueurGagnant);
         }
 
         joueursPartie.joueur.lancerMissile(coordonnee);
@@ -150,9 +312,11 @@
         joueursPartie.joueur.resultatLancerMissile(resultat);
         if (this.partieFini()) {
           joueurGagnant = this.estGagnant();
+          alert(joueurGagnant);
         }
       }
     }
+
     /**
      * Cette fonction détermine ce que le joueur a
      * touché et renvoie le bon entier selon le résultat
@@ -227,64 +391,57 @@
     /**
      * Cette fonction détermine ce que l'ordinateur a
      * touché et renvoie le bon entier selon le résultat
-     * @param {string} coordonneeTir Position à laquel le joueur à tiré
-     * @return {Number} Retourne un entier selon le résultat du tir
+     * @param {string} coordonneesMissile Position à laquel le joueur à tiré
      */
-    obtenirResultatLancerOrdinateur(coordonneeTir) {
-      if (joueursPartie.joueur.listeBateaux['porte-avions'].includes(coordonneeTir)) {
-        nbCoupPorteAvionJ++;
-        dernierTir = coordonneeTir;
-        if (nbCoupPorteAvionJ == 5) {
-          return 2;
-        } else {
-          return 1;
-        }
-      } else if (joueursPartie.joueur.listeBateaux['cuirasse'].includes(coordonneeTir)) {
-        nbCoupCuirasseJ++;
-        dernierTir = coordonneeTir;
-        if (nbCoupCuirasseJ == 4) {
-          return 3;
-        } else {
-          return 1;
-        }
-      } else if (joueursPartie.joueur.listeBateaux['destroyer'].includes(coordonneeTir)) {
-        nbCoupDestroyerJ++;
-        dernierTir = coordonneeTir;
-        if (nbCoupDestroyerJ == 3) {
-          return 4;
-        } else {
-          return 1;
-        }
-      } else if (joueursPartie.joueur.listeBateaux['torpilleur'].includes(coordonneeTir)) {
-        nbCoupTorpilleurJ++;
-        dernierTir = coordonneeTir;
-        if (nbCoupTorpilleurJ == 3) {
-          return 5;
-        } else {
-          return 1;
-        }
-      } else if (joueursPartie.joueur.listeBateaux['sous-marin'].includes(coordonneeTir)) {
-        nbCoupSousMarinJ++;
-        dernierTir = coordonneeTir;
-        if (nbCoupSousMarinJ == 2) {
-          return 6;
-        } else {
-          return 1;
-        }
-      } else {
-        dernierTir = coordonneeTir;
-        return 0;
+    calculResultat(coordonneesMissile) {
+      if (joueursPartie.joueur.listeBateaux['porte-avions'].includes(coordonneesMissile)) {
+        joueursPartie.ordinateur.calculCompteur(coordonneesMissile);
+        ++cptPorteAvionsIA;
+        ++cptGlobalTir;
+      } else if (joueursPartie.joueur.listeBateaux['cuirasse'].includes(coordonneesMissile)) {
+        joueursPartie.ordinateur.calculCompteur(coordonneesMissile);
+        ++cptCuirasseIA;
+        ++cptGlobalTir;
+      } else if (joueursPartie.joueur.listeBateaux['destroyer'].includes(coordonneesMissile)) {
+        joueursPartie.ordinateur.calculCompteur(coordonneesMissile);
+        ++cptDestroyerIA;
+        ++cptGlobalTir;
+      } else if (joueursPartie.joueur.listeBateaux['torpilleur'].includes(coordonneesMissile)) {
+        joueursPartie.ordinateur.calculCompteur(coordonneesMissile);
+        ++cptTorpilleurIA;
+        ++cptGlobalTir;
+      } else if (joueursPartie.joueur.listeBateaux['sous-marin'].includes(coordonneesMissile)) {
+        joueursPartie.ordinateur.calculCompteur(coordonneesMissile);
+        ++cptSousMarinIA;
+        ++cptGlobalTir;
       }
-    }
 
-    /**
-     * Fonction qui sert à tout mettre en place pour commencer la partie
-     */
-    commencerPartie() {
-      partieCommencer = true;
-      this.positionBateauxJoueur1 = joueursPartie.joueur.placerBateaux();
-      this.positionBateauxJoueur2 = joueursPartie.ordinateur.placerBateaux();
-      joueurCommence = nombreAleatoireIntervalle(1, 2);
+      if (cptPorteAvionsIA >= 5 && porteAvionsCouler == false) {
+        joueursPartie.ordinateur.resultatLancerMissile(2);
+        porteAvionsCouler = true;
+        joueursPartie.ordinateur.remettreDirectionsAFalse();
+      } else if (cptCuirasseIA >= 4 && cuirasseCouler == false) {
+        joueursPartie.ordinateur.resultatLancerMissile(3);
+        cuirasseCouler = true;
+        joueursPartie.ordinateur.remettreDirectionsAFalse();
+      } else if (cptDestroyerIA >= 3 && destroyerCouler == false) {
+        joueursPartie.ordinateur.resultatLancerMissile(4);
+        destroyerCouler = true;
+        joueursPartie.ordinateur.remettreDirectionsAFalse();
+      } else if (cptTorpilleurIA >= 3 && torpilleurCouler == false) {
+        joueursPartie.ordinateur.resultatLancerMissile(5);
+        torpilleurCouler = true;
+        joueursPartie.ordinateur.remettreDirectionsAFalse();
+      } else if (cptSousMarinIA >= 2 && sousMarinCouler == false) {
+        joueursPartie.ordinateur.resultatLancerMissile(6);
+        sousMarinCouler = true;
+        joueursPartie.ordinateur.remettreDirectionsAFalse();
+      } else if (cptGlobalTir == 1) {
+        joueursPartie.ordinateur.resultatLancerMissile(1);
+      } else {
+        joueursPartie.ordinateur.resultatLancerMissile(0);
+      }
+      cptGlobalTir = 0;
     }
 
     /**
@@ -299,8 +456,8 @@
       nbCoupToucheJoueur = nbCoupPorteAvionIA + nbCoupCuirasseIA +
         nbCoupDestroyerIA + nbCoupTorpilleurIA + nbCoupSousMarinIA;
 
-      nbCoupToucheIA = nbCoupPorteAvionJ + nbCoupCuirasseJ +
-      nbCoupDestroyerJ + nbCoupTorpilleurJ + nbCoupSousMarinJ;
+      nbCoupToucheIA = cptPorteAvionsIA + cptCuirasseIA +
+      cptDestroyerIA + cptTorpilleurIA + cptSousMarinIA;
 
       if (nbCoupToucheJoueur == nbCoupTotalGagner || nbCoupToucheIA == nbCoupTotalGagner) {
         return true;
@@ -329,24 +486,13 @@
   }
 
   $(document).ready(function() {
+    // Initialise le jeu et les joueurs
     joueurHumain = new Joueur();
     partie = new Battleship();
 
     partie.ajouterJoueur(joueurHumain, window.IA);
 
-    // console.log(partie.joueur);
-    // console.log(partie.ordinateur);
-
-    // Section test ne pas supprimer *******************************************
-    // joueursPartie.ordinateur.placerBateaux();
-    // const allo = joueursPartie.joueur.listeBateaux['porte-avions'];
-    // const po = joueursPartie.ordinateur.listeBateaux['porte-avions'];
-    // joueursPartie.joueur.resultatLancerMissile(2);
-    // joueursPartie.ordinateur.resultatLancerMissile(2);
-    // po;
-    // allo;
-    // *************************************************************************
-
+    // Création des grilles de jeu
     function creationGrilleDef() {
       const grille = document.getElementById('grilleDef');
       const grilleDef = document.createElement('table');
@@ -424,7 +570,6 @@
       grille.appendChild(grilleAtt);
     }
 
-    // TODO vérifier comment arranger cette erreur
     function caseEnterCouleur() {
       $('.eau').mouseenter(function() {
         $(this).css('opacity', '0.5');
@@ -434,15 +579,24 @@
       });
     }
 
+    // Appel des fonctions pour la création de l'interface
     creationGrilleDef();
     creationGrilleAtt();
     caseEnterCouleur();
+    couleurCaseBateaux();
 
+
+    // Si activé, va lancer la fonction jouer qui va déclancer les missiles de chaques joueurs
     $('td').click(function() {
       if ($(this).hasClass('tir') && partieCommencer) {
         const coordonnee = $(this).attr('id');
         partie.jouer(coordonnee);
       }
+    });
+
+    // Si activé, va lancer la fonction recommencer qui va tout réinisialiser la table de jeu
+    $('#recommencer').click(function() {
+      partie.recommencerPartie();
     });
   });
 }());
